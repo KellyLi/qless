@@ -1,0 +1,16 @@
+[
+  {
+    "name": "K. Malone",
+    "is_walk_in": true,
+    "appointment_time": null,
+    "appointment_start": 1510509630,
+    "appointment_end": 1510510530
+  },
+  {
+    "name": "P. Beesley",
+    "is_walk_in": false,
+    "appointment_time": 1510513230,
+    "appointment_start": 1510513470,
+    "appointment_end": 1510514370
+  }
+]
