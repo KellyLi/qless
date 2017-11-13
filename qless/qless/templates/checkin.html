@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<HTML>
+<HEAD>
+	<link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="static/jquery-3.2.1.min.js"></script>
+
+</HEAD>
+<BODY class="jumbotron">
+	<div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1 class="display-4">WALK IN CHECK IN </h1>
+			<p class="lead">Please check in to be placed in queue for your walk in appointment.</p>
+			<hr class="my-4">
+		</div>
+
+		<div class="container">
+			<form id="checkinForm">
+			<div class="form-group">
+				<label for="firstNameInput">First Name</label>
+				<input type="text" class="form-control" name="firstNameInput" placeholder="first name" autocomplete="off">
+			</div>
+
+			<div class="form-group">
+				<label for="lastNameInput">Last Name</label>
+				<input type="text" class="form-control" name="lastNameInput" placeholder="last name" autocomplete="off">
+			</div>
+
+			<button id="checkinSubmit"type="submit" class="btn btn-primary">Submit</button>
+
+			</form>
+		</div>
+
+		<div class="container">
+			<hr class="my-4">
+			<footer class="footer">
+				<p>&copy; Queueless 2015</p>
+			</footer>
+		</div>
+	</div>
+
+	<script>
+		$(function() {
+			$('#checkinSubmit').click(function(){
+				$.ajax({
+					url: '/checkin',
+					data: $('#checkinForm').serialize(),
+					type: 'POST',
+					success: function(response) {
+						window.location.href="/checkin/success"
+					},
+					error: function(error) {
+						console.log(error);
+					}
+				});
+			});
+		});
+	</script>
+</BODY>
+</HTML>
