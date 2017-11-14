@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
+from FirebaseManager import FirebaseManager
 
 app = Flask(__name__)
+firebaseManager = FirebaseManager()
 
 @app.route('/')
 def index():
@@ -8,12 +10,10 @@ def index():
 
 @app.route('/checkin', methods=['POST'])
 def check_in_submit():
-	_firstName = request.form['firstNameInput']
-	_lastName = request.form['lastNameInput']
-	return jsonify({
-			'first_name': _firstName,
-			'last_name': _lastName
-		})
+	firstName = request.form['firstNameInput']
+	lastName = request.form['lastNameInput']
+	name = str(firstName + ' ' + lastName)
+	return firebaseManager.addUser(1, 1, True, name, None)
 
 @app.route('/checkin/success')
 def check_in_success():
@@ -21,13 +21,7 @@ def check_in_success():
 
 @app.route('/data')
 def get_data():
-	return jsonify({
-		'patient': "patient_string",
-		'appointment_time': 'DateTime',
-		'is_walk_in': True,
-		'appointment_length': 'DateTime'
-	})
-
+	return firebaseManager.getUsers()
 
 if __name__ == "__main__":
 	app.run()
