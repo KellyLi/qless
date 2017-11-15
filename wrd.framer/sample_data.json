@@ -1,16 +1,48 @@
-[
-  {
-    "name": "K. Malone",
-    "is_walk_in": true,
-    "appointment_time": null,
-    "appointment_start": 1510509630,
-    "appointment_end": 1510510530
-  },
-  {
-    "name": "P. Beesley",
-    "is_walk_in": false,
-    "appointment_time": 1510513230,
-    "appointment_start": 1510513470,
-    "appointment_end": 1510514370
-  }
-]
+{
+  "walk_in_queue": [
+    {
+      "name": "K. Malone",
+      "predicted_start_time": 1510509630,
+      "check_in_time": 1510510530,
+      "is_checked_in": false
+      },
+      {
+        "name": "P. Beesley",
+        "predicted_start_time": 1510513470,
+        "check_in_time": 1510514370,
+        "is_checked_in": true
+      }
+  ],
+  "doctor_martin_queue": [
+    {
+      "name": "A. Balone",
+      "scheduled_start_time": 1510513230,
+      "predicted_start_time": 1510509630,
+      "check_in_time": 1510510530,
+      "is_checked_in": false
+      },
+      {
+        "name": "C. Deesley",
+        "scheduled_start_time": 1510513230,
+        "predicted_start_time": 1510513470,
+        "check_in_time": 1510514370,
+        "is_checked_in": true
+      }
+  ],
+  "doctor_hudson_queue": [
+    {
+      "name": "F. Galone",
+      "scheduled_start_time": 1510513230,
+      "predicted_start_time": 1510509630,
+      "check_in_time": 1510510530,
+      "is_checked_in": false
+      },
+      {
+        "name": "H. Jeesley",
+        "scheduled_start_time": 1510513230,
+        "predicted_start_time": 1510513470,
+        "check_in_time": 1510514370,
+        "is_checked_in": true
+      }
+  ]
+}
