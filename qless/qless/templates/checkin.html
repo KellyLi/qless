@@ -10,8 +10,8 @@
 <BODY class="jumbotron">
 	<div class="jumbotron jumbotron-fluid">
 		<div class="container">
-			<h1 class="display-4">WALK IN CHECK IN </h1>
-			<p class="lead">Please check in to be placed in queue for your walk in appointment.</p>
+			<h1 class="display-4">ADD PATIENT</h1>
+			<p class="lead">Add walk in or scheduled patient.</p>
 			<hr class="my-4">
 		</div>
 
@@ -25,6 +25,10 @@
 			<div class="form-group">
 				<label for="lastNameInput">Last Name</label>
 				<input type="text" class="form-control" name="lastNameInput" placeholder="last name" autocomplete="off">
+			</div>
+
+			<div class="checkbox">
+				<label><input type="checkbox" name="isWalkin"> Walk in patient</label>
 			</div>
 
 			<button id="checkinSubmit"type="submit" class="btn btn-primary">Submit</button>

@@ -13,7 +13,8 @@ def check_in_submit():
 	firstName = request.form['firstNameInput']
 	lastName = request.form['lastNameInput']
 	name = str(firstName + ' ' + lastName)
-	return firebaseManager.addUser(1, 1, True, name, None)
+	isWalkin = True if 'isWalkin' in request.form else False
+	return firebaseManager.addUser(1, 1, isWalkin, name, None)
 
 @app.route('/checkin/success')
 def check_in_success():
