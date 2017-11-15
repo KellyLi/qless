@@ -44,5 +44,37 @@
         "check_in_time": 1510514370,
         "is_checked_in": true
       }
+  ],
+  "now_paging": [
+    {
+      "name": "K. Lalone",
+      "scheduled_start_time": 1510513230,
+      "predicted_start_time": 1510509630,
+      "check_in_time": 1510510530,
+      "is_checked_in": true
+      },
+      {
+        "name": "M. Neesley",
+        "scheduled_start_time": 1510513230,
+        "predicted_start_time": 1510513470,
+        "check_in_time": 1510514370,
+        "is_checked_in": true
+      }
+  ],
+  "patients_seen": [
+      {
+      "name": "O. Palone",
+      "scheduled_start_time": 1510513230,
+      "predicted_start_time": 1510509630,
+      "check_in_time": 1510510530,
+      "is_checked_in": true
+      },
+      {
+        "name": "Q. Reesley",
+        "scheduled_start_time": 1510513230,
+        "predicted_start_time": 1510513470,
+        "check_in_time": 1510514370,
+        "is_checked_in": true
+      }
   ]
 }
