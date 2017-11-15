@@ -1,20 +1,20 @@
 {
   "orientation" : 0,
-  "updateDelay" : 0,
+  "updateDelay" : 0.3,
   "designModeSelected" : 0,
-  "cachedDeviceHeight" : 720,
+  "cachedDeviceHeight" : 1080,
   "contentScale" : 1,
-  "cachedDeviceWidth" : 1152,
+  "cachedDeviceWidth" : 1920,
   "fullScreen" : false,
-  "deviceType" : "apple-macbook",
+  "deviceType" : "custom",
   "sharedPrototype" : 0,
   "propertyPanelToggleStates" : {
-
+    "Filters" : false
   },
   "projectId" : "8D66A8CF-2A78-42EC-B3EC-17A6F9F1ACE5",
   "deviceOrientation" : 0,
   "selectedHand" : "iphone-hands-1",
-  "showBezel" : 0,
+  "showBezel" : false,
   "foldedCodeRanges" : [
 
   ],
