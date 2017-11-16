@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request
 from FirebaseManager import FirebaseManager
+from QueueManager import QueueManager
 
 app = Flask(__name__)
 firebaseManager = FirebaseManager()
+queueManager = QueueManager()
 
 @app.route('/')
 def index():
@@ -20,9 +22,10 @@ def check_in_submit():
 def check_in_success():
 	return render_template('success.html')
 
-@app.route('/data')
-def get_data():
-	return firebaseManager.getUsers()
+@app.route('/test')
+def test():
+	queueManager.check_in("A. Balone", False)
+	return '{}'
 
 if __name__ == "__main__":
 	app.run()

@@ -1,80 +1,86 @@
 {
-  "walk_in_queue": [
+  "queues": [
     {
-      "name": "K. Malone",
-      "predicted_start_time": 1510509630,
-      "check_in_time": 1510510530,
-      "is_checked_in": false
-      },
-      {
-        "name": "P. Beesley",
-        "predicted_start_time": 1510513470,
-        "check_in_time": 1510514370,
-        "is_checked_in": true
-      }
-  ],
-  "doctor_martin_queue": [
+      "walk_in": [
+          {
+              "name": "K. Malone",
+              "predicted_start_time": 1510509630,
+              "check_in_time": 1510510530
+            },
+            {
+              "name": "P. Beesley",
+              "predicted_start_time": 1510513470,
+              "check_in_time": 1510514370
+            }
+      ]
+    },
     {
-      "name": "A. Balone",
-      "scheduled_start_time": 1510513230,
-      "predicted_start_time": 1510509630,
-      "check_in_time": 1510510530,
-      "is_checked_in": false
-      },
-      {
-        "name": "C. Deesley",
-        "scheduled_start_time": 1510513230,
-        "predicted_start_time": 1510513470,
-        "check_in_time": 1510514370,
-        "is_checked_in": true
-      }
-  ],
-  "doctor_hudson_queue": [
+      "doctor_martin": [
+          {
+              "name": "A. Balone",
+              "scheduled_start_time": 1510513230,
+              "predicted_start_time": 1510509630,
+              "check_in_time": 1510510530,
+              "is_checked_in": false
+            },
+            {
+              "name": "C. Deesley",
+              "scheduled_start_time": 1510513230,
+              "predicted_start_time": 1510513470,
+              "check_in_time": 1510514370,
+              "is_checked_in": true
+            }
+        ]
+    },
     {
-      "name": "F. Galone",
-      "scheduled_start_time": 1510513230,
-      "predicted_start_time": 1510509630,
-      "check_in_time": 1510510530,
-      "is_checked_in": false
-      },
-      {
-        "name": "H. Jeesley",
-        "scheduled_start_time": 1510513230,
-        "predicted_start_time": 1510513470,
-        "check_in_time": 1510514370,
-        "is_checked_in": true
-      }
+      "doctor_hudson": [
+          {
+              "name": "F. Galone",
+              "scheduled_start_time": 1510513230,
+              "predicted_start_time": 1510509630,
+              "check_in_time": 1510510530,
+              "is_checked_in": false
+            },
+            {
+              "name": "H. Jeesley",
+              "scheduled_start_time": 1510513230,
+              "predicted_start_time": 1510513470,
+              "check_in_time": 1510514370,
+              "is_checked_in": true
+            }
+        ]
+    }
   ],
   "now_paging": [
-    {
-      "name": "K. Lalone",
-      "scheduled_start_time": 1510513230,
-      "predicted_start_time": 1510509630,
-      "check_in_time": 1510510530,
-      "is_checked_in": true
+      {
+        "name": "K. Lalone",
+        "scheduled_start_time": 1510513230,
+        "predicted_start_time": 1510509630,
+        "check_in_time": 1510510530,
+        "is_checked_in": true
       },
       {
         "name": "M. Neesley",
         "scheduled_start_time": 1510513230,
-        "predicted_start_time": 1510513470,
-        "check_in_time": 1510514370,
-        "is_checked_in": true
+          "predicted_start_time": 1510513470,
+          "check_in_time": 1510514370,
+          "is_checked_in": true
       }
-  ],
-  "patients_seen": [
+    ],
+    "patients_seen": [
       {
-      "name": "O. Palone",
-      "scheduled_start_time": 1510513230,
-      "predicted_start_time": 1510509630,
-      "check_in_time": 1510510530,
-      "is_checked_in": true
-      },
-      {
-        "name": "Q. Reesley",
-        "scheduled_start_time": 1510513230,
-        "predicted_start_time": 1510513470,
-        "check_in_time": 1510514370,
-        "is_checked_in": true
-      }
-  ]
+          "name": "O. Palone",
+          "scheduled_start_time": 1510513230,
+          "predicted_start_time": 1510509630,
+          "check_in_time": 1510510530,
+          "is_checked_in": true
+        },
+        {
+          "name": "Q. Reesley",
+          "scheduled_start_time": 1510513230,
+          "predicted_start_time": 1510513470,
+          "check_in_time": 1510514370,
+          "is_checked_in": true
+        }
+    ]
 }
