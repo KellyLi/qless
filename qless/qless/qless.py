@@ -1,9 +1,7 @@
 from flask import Flask, render_template, request
-from FirebaseManager import FirebaseManager
 from QueueManager import QueueManager
 
 app = Flask(__name__)
-firebaseManager = FirebaseManager()
 queueManager = QueueManager()
 
 @app.route('/')
@@ -16,7 +14,7 @@ def check_in_submit():
 	lastName = request.form['lastNameInput']
 	name = str(firstName + ' ' + lastName)
 	isWalkin = True if 'isWalkin' in request.form else False
-	return firebaseManager.addUser(1, 1, isWalkin, name, None)
+	return '{}'
 
 @app.route('/checkin/success')
 def check_in_success():

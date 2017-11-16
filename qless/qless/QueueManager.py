@@ -6,6 +6,10 @@ from FirebaseManager import FirebaseManager
 class QueueManager:
 	firebaseManager = FirebaseManager()
 
+	# TODO: logic to add scheduled user
+	def add_scheduled_user(self, name, doctor_name):
+		print('add scheduled user')
+
 	# check in logic starts here
 	def check_in(self, name, is_walk_in):
 		if is_walk_in:
@@ -16,11 +20,11 @@ class QueueManager:
 	# logic for walk in check in
 	def check_in_walk_in(self, name):
 		predicted_wait_time = self.get_predicted_start_time()
-		self.firebaseManager.addWalkInUser(name, self.get_current_millis(), predicted_wait_time)
+		self.firebaseManager.add_walk_in_user(name, self.get_current_millis(), predicted_wait_time)
 
 	# logic for scheduled check in
 	def check_in_scheduled(self, name):
-		queues = self.firebaseManager.getQueues()
+		queues = self.firebaseManager.get_queues()
 		current_user = None
 		doctor = None
 
@@ -43,7 +47,7 @@ class QueueManager:
 		if current_user:
 			# get predicted start time
 			predicted_wait_time = self.get_predicted_start_time()
-			self.firebaseManager.checkInScheduledUser(doctor_index, doctor, user_index, self.get_current_millis(), predicted_wait_time)
+			self.firebaseManager.check_in_scheduled_user(doctor_index, doctor, user_index, self.get_current_millis(), predicted_wait_time)
 
 	# TODO: helper function to get predicted start time from prediction model
 	def get_predicted_start_time(self):
