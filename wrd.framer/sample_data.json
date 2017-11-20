@@ -1,13 +1,57 @@
 {
+  "users": [
+    {
+      "id": 0,
+      "name": "K. Malone"
+    },
+    {
+      "id": 1,
+      "name": "P. Beesley"
+    },
+    {
+      "id": 2,
+      "name": "A. Balone"
+    },
+    {
+      "id": 3,
+      "name": "C. Deesley"
+    },
+    {
+      "id": 4,
+      "name": "F. Galone"
+    },
+    {
+      "id": 5,
+      "name": "H. Jeesley"
+    },
+    {
+      "id": 6,
+      "name": "K. Lalone"
+    },
+    {
+      "id": 7,
+      "name": "M. Neesley"
+    },
+    {
+      "id": 8,
+      "name": "O. Palone"
+    },
+    {
+      "id": 9,
+      "name": "Q. Reesley"
+    }
+  ],
   "queues": [
     {
       "walk_in": [
           {
+              "id": 0,
               "name": "K. Malone",
               "predicted_start_time": 1510509630,
               "check_in_time": 1510510530
             },
             {
+              "id": 1,
               "name": "P. Beesley",
               "predicted_start_time": 1510513470,
               "check_in_time": 1510514370
@@ -17,6 +61,7 @@
     {
       "doctor_martin": [
           {
+              "id": 2,
               "name": "A. Balone",
               "scheduled_start_time": 1510513230,
               "predicted_start_time": 1510509630,
@@ -24,6 +69,7 @@
               "is_checked_in": false
             },
             {
+              "id": 3,
               "name": "C. Deesley",
               "scheduled_start_time": 1510513230,
               "predicted_start_time": 1510513470,
@@ -35,6 +81,7 @@
     {
       "doctor_hudson": [
           {
+              "id": 4,
               "name": "F. Galone",
               "scheduled_start_time": 1510513230,
               "predicted_start_time": 1510509630,
@@ -42,6 +89,7 @@
               "is_checked_in": false
             },
             {
+              "id": 5,
               "name": "H. Jeesley",
               "scheduled_start_time": 1510513230,
               "predicted_start_time": 1510513470,
@@ -53,6 +101,7 @@
   ],
   "now_paging": [
       {
+        "id": 6,
         "name": "K. Lalone",
         "scheduled_start_time": 1510513230,
         "predicted_start_time": 1510509630,
@@ -60,6 +109,7 @@
         "is_checked_in": true
       },
       {
+        "id": 7,
         "name": "M. Neesley",
         "scheduled_start_time": 1510513230,
           "predicted_start_time": 1510513470,
@@ -69,6 +119,7 @@
     ],
     "patients_seen": [
       {
+          "id": 8,
           "name": "O. Palone",
           "scheduled_start_time": 1510513230,
           "predicted_start_time": 1510509630,
@@ -76,6 +127,7 @@
           "is_checked_in": true
         },
         {
+          "id": 9,
           "name": "Q. Reesley",
           "scheduled_start_time": 1510513230,
           "predicted_start_time": 1510513470,

@@ -7,7 +7,7 @@ class QueueManager:
 	firebaseManager = FirebaseManager()
 
 	# TODO: logic to add scheduled user
-	def add_scheduled_user(self, name, doctor_name):
+	def add_scheduled_user(self, name, doctor_name, scheduled_start_time):
 		print('add scheduled user')
 
 	# check in logic starts here
