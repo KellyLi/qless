@@ -281,18 +281,18 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			x: 30
 			y: 75
 
-firebase.onChange "/queues", (queues) ->
+firebase.onChange "/queues", (_) ->
 	for child in patientLists.children
 		child.destroy()
 
-	for queue in queues
-		switch Object.keys(queue)[0]
-			when 'walk_in' then renderList(
-				0, "Walk-in Appointments","first come first serve", queue.walk_in, true)
-			when 'doctor_martin' then renderList(
-				1, "Dr. Martin's Schedule","on time", queue.doctor_martin)
-			when 'doctor_hudson' then renderList(
-				2, "Dr. Hudson's Schedule","on time", queue.doctor_hudson)
-				
+	firebase.onChange "/queues/walk_in", (queue) ->
+		renderList(0, "Walk-in Appointments","first come first serve", queue, true)
+
+	firebase.onChange "/queues/doctor_martin", (queue) ->
+		renderList(1, "Dr. Martin's Schedule","on time", queue)
+
+	firebase.onChange "/queues/doctor_hudson", (queue) ->
+		renderList(2, "Dr. Hudson's Schedule","on time", queue)
+
 firebase.onChange "/now_paging", (queue) ->
 	renderNowCallingPatients(queue)
