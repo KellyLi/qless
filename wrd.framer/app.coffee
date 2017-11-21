@@ -240,19 +240,21 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			nameColor = "#AF6CD5"
 			waitColor = "#877A87"
 			borderColor = "#F4E7FF"
+			waitTime = (patient.predicted_start_time - (new Date).getTime())/60000
+			formattedTime = Math.round(waitTime) + " min"
 		else if patient.is_checked_in is true
 			bgColor = "#DAE7FF"
 			nameColor = "#4786FF"
 			waitColor = "#7A7C87"
 			borderColor = "#DAE7FF"
+			waitTime = (patient.predicted_start_time - (new Date).getTime())/60000
+			formattedTime = Math.round(waitTime) + " min"
 		else if patient.is_checked_in is false
 			bgColor = "#fff"
 			nameColor = "#3D464D"
 			waitColor = "#87807A"
 			borderColor = "#EDEFF2"
-
-		waitTime = (patient.predicted_start_time - (new Date).getTime())/60000
-		formattedTime= Math.round(waitTime) + " min"
+			formattedTime = "not checked in"
 
 		patientCard = new Layer
 			width: 360
@@ -284,14 +286,15 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			x: 30
 			y: 75
 
-firebase.onChange "/queues", (queues) ->
+firebase.onChange "/queues", ->
 	for child in patientLists.children
 		child.destroy()
-	renderList(0, "Walk-in Appointments","first come first serve", queues.walk_in, true)
-	renderList(1, "Dr. Martin's Schedule","on time", queues.doctor_martin)
-	renderList(2, "Dr. Hudson's Schedule","on time", queues.doctor_hudson)
+	firebase.get "/queues", (queues) ->
+		renderList(0, "Walk-in Appointments","first come first serve", queues.walk_in, true)
+		renderList(1, "Dr. Martin's Schedule","on time", queues.doctor_martin)
+		renderList(2, "Dr. Hudson's Schedule","on time", queues.doctor_hudson)
 
-firebase.onChange "/now_paging", (queue) ->
+firebase.onChange "/now_paging", ->
 	for child in nowCalling.children
 		child.destroy()
 	firebase.get "/now_paging", (queue) ->
