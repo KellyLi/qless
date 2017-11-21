@@ -15,7 +15,7 @@ renderNowCallingPatients = (patients) ->
 		width: 520
 		y: 301
 		backgroundColor: 'transparent'
-		
+
 	nowCallingHeader = new TextLayer
 		parent: nowCalling
 		text: "Now Calling"
@@ -34,7 +34,7 @@ renderNowCallingPatients = (patients) ->
 			x: Align.center
 			y: 85 + i * 195
 			parent: nowCalling
-		
+
 		nowCallingPatientFade = new Layer
 			width: 420
 			height: 175
@@ -42,7 +42,7 @@ renderNowCallingPatients = (patients) ->
 			borderRadius: 12
 			opacity: .6
 			parent: nowCallingPatient
-			
+
 		patientName = new TextLayer
 			text: patient[0]
 			parent: nowCallingPatient
@@ -52,7 +52,7 @@ renderNowCallingPatients = (patients) ->
 			color: "#47525D"
 			x: 50
 			y: 35
-		
+
 		patientRoom = new TextLayer
 			text: patient[1]
 			parent: nowCallingPatient
@@ -66,13 +66,13 @@ renderNowCallingPatients = (patients) ->
 	fadeIn  = new Animation nowCallingPatientFade,
 		opacity: .8
 		scale: 1.02
-	 
+
 	fadeOut = fadeIn.reverse()
-	 
-	# Alternate between the two animations 
+
+	# Alternate between the two animations
 	fadeIn.on Events.AnimationEnd, fadeOut.start
 	fadeOut.on Events.AnimationEnd, fadeIn.start
-	 
+
 	fadeIn.start()
 
 sidebar  = new Layer
@@ -89,23 +89,23 @@ layer = new Layer
 today = new Date
 
 renderDate = (today) ->
-	daylist = [  
-		'Sunday'  
-		'Monday'  
-		'Tuesday'  
-		'Wednesday'  
-		'Thursday'  
-		'Friday'  
-		'Saturday'  
+	daylist = [
+		'Sunday'
+		'Monday'
+		'Tuesday'
+		'Wednesday'
+		'Thursday'
+		'Friday'
+		'Saturday'
 	]
 
-	monthlist = [  
-		'Jan'  
-		'Feb'  
-		'Mar'  
-		'Apr '  
-		'May'  
-		'Jun'  
+	monthlist = [
+		'Jan'
+		'Feb'
+		'Mar'
+		'Apr '
+		'May'
+		'Jun'
 		'Jul',
 		'Aug',
 		'Sept',
@@ -123,7 +123,7 @@ renderDate = (today) ->
 	else
 		day = today.getDay() + "th"
 	daylist[today.getDay()] + ", " + monthlist[today.getMonth()] + " " + day
-	
+
 renderTime = (today) ->
 	if today.getHours() > 12
 		today.getHours() - 12 + ":" + ("00" + today.getMinutes()).slice(-2)
@@ -219,7 +219,7 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 		backgroundColor: 'transparent'
 		parent: patientLists
 		x: listPos * 440
-		
+
 	listHeader = new TextLayer
 		parent: list
 		text: header
@@ -253,7 +253,7 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			nameColor = "#3D464D"
 			waitColor = "#87807A"
 			borderColor = "#EDEFF2"
-	
+
 		patientCard = new Layer
 			width: 360
 			height: 138
@@ -263,7 +263,7 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			parent: list
 			borderColor: borderColor
 			borderWidth: 2
-			
+
 		patientName = new TextLayer
 			text: patient.name
 			parent: patientCard
@@ -273,7 +273,7 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			color: nameColor
 			x: 30
 			y: 25
-		
+
 		patientWait = new TextLayer
 			text: (patient.predicted_start - (new Date).getTime())/60000
 			parent: patientCard
@@ -284,16 +284,15 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			x: 30
 			y: 75
 
-firebase.onChange "/", (value) ->
+firebase.onChange "/queues", (queues) ->
 	for child in patientLists.children
 		child.destroy()
 
-	firebase.get "/walk_in_queue", (value) ->
-		renderList(0, "Walk-in Appointments","first come first serve", value, true)
-	
-	firebase.get "/doctor_martin_queue", (value) ->
-		renderList(1, "Dr. Martin's Schedule","on time", value)
-	
-	firebase.get "/doctor_hudson_queue", (value) ->
-		renderList(2, "Dr. Hudson's Schedule","on time", value)
-	
+	for queue in queues
+		switch Object.keys(queue)[0]
+			when 'walk_in' then renderList(
+				0, "Walk-in Appointments","first come first serve", queue.walk_in, true)
+			when 'doctor_martin' then renderList(
+				1, "Dr. Martin's Schedule","on time", queue.doctor_martin)
+			when 'doctor_hudson' then renderList(
+				2, "Dr. Hudson's Schedule","on time", queue.doctor_hudson)
