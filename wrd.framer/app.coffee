@@ -66,13 +66,13 @@ renderNowCallingPatients = (patients) ->
 		fadeIn  = new Animation nowCallingPatientFade,
 			opacity: .8
 			scale: 1.02
-	
+
 		fadeOut = fadeIn.reverse()
-	
+
 		# Alternate between the two animations
 		fadeIn.on Events.AnimationEnd, fadeOut.start
 		fadeOut.on Events.AnimationEnd, fadeIn.start
-	
+
 		fadeIn.start()
 
 sidebar  = new Layer
@@ -281,18 +281,12 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			x: 30
 			y: 75
 
-firebase.onChange "/queues", (_) ->
+firebase.onChange "/queues", (queues) ->
 	for child in patientLists.children
 		child.destroy()
-
-	firebase.onChange "/queues/walk_in", (queue) ->
-		renderList(0, "Walk-in Appointments","first come first serve", queue, true)
-
-	firebase.onChange "/queues/doctor_martin", (queue) ->
-		renderList(1, "Dr. Martin's Schedule","on time", queue)
-
-	firebase.onChange "/queues/doctor_hudson", (queue) ->
-		renderList(2, "Dr. Hudson's Schedule","on time", queue)
+	renderList(0, "Walk-in Appointments","first come first serve", queues.walk_in, true)
+	renderList(1, "Dr. Martin's Schedule","on time", queues.doctor_martin)
+	renderList(2, "Dr. Hudson's Schedule","on time", queues.doctor_hudson)
 
 firebase.onChange "/now_paging", (queue) ->
 	renderNowCallingPatients(queue)
