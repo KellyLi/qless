@@ -44,7 +44,7 @@ renderNowCallingPatients = (patients) ->
 			parent: nowCallingPatient
 
 		patientName = new TextLayer
-			text: patient[0]
+			text: patient.name
 			parent: nowCallingPatient
 			fontFamily: Utils.loadWebFont "Nunito Sans"
 			fontWeight: 700
@@ -54,7 +54,7 @@ renderNowCallingPatients = (patients) ->
 			y: 35
 
 		patientRoom = new TextLayer
-			text: patient[1]
+			text: patient.name # change to .room
 			parent: nowCallingPatient
 			fontFamily: Utils.loadWebFont "Nunito Sans"
 			fontWeight: 700
@@ -296,3 +296,6 @@ firebase.onChange "/queues", (queues) ->
 				1, "Dr. Martin's Schedule","on time", queue.doctor_martin)
 			when 'doctor_hudson' then renderList(
 				2, "Dr. Hudson's Schedule","on time", queue.doctor_hudson)
+				
+firebase.onChange "/now_paging", (queue) ->
+	renderNowCallingPatients()

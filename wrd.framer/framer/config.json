@@ -1,6 +1,6 @@
 {
   "orientation" : 0,
-  "updateDelay" : 0.3,
+  "updateDelay" : 0,
   "designModeSelected" : 0,
   "cachedDeviceHeight" : 1080,
   "contentScale" : 1,
@@ -16,7 +16,7 @@
   "selectedHand" : "iphone-hands-1",
   "showBezel" : false,
   "foldedCodeRanges" : [
-    "{261, 1335}"
+
   ],
   "deviceScale" : "fit"
 }
