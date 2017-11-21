@@ -275,7 +275,7 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			y: 25
 
 		patientWait = new TextLayer
-			text: (patient.predicted_start - (new Date).getTime())/60000
+			text: (patient.predicted_start_time - (new Date).getTime())/60000
 			parent: patientCard
 			fontFamily: Utils.loadWebFont "Nunito Sans"
 			fontWeight: 600
