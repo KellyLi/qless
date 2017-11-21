@@ -63,17 +63,17 @@ renderNowCallingPatients = (patients) ->
 			x: 50
 			y: 102
 
-	fadeIn  = new Animation nowCallingPatientFade,
-		opacity: .8
-		scale: 1.02
-
-	fadeOut = fadeIn.reverse()
-
-	# Alternate between the two animations
-	fadeIn.on Events.AnimationEnd, fadeOut.start
-	fadeOut.on Events.AnimationEnd, fadeIn.start
-
-	fadeIn.start()
+		fadeIn  = new Animation nowCallingPatientFade,
+			opacity: .8
+			scale: 1.02
+	
+		fadeOut = fadeIn.reverse()
+	
+		# Alternate between the two animations
+		fadeIn.on Events.AnimationEnd, fadeOut.start
+		fadeOut.on Events.AnimationEnd, fadeIn.start
+	
+		fadeIn.start()
 
 sidebar  = new Layer
 	width: 320
@@ -166,9 +166,6 @@ meridian = new TextLayer
 	x: time.width
 	y: 80
 	color: 'white'
-
-patients = [["M. Scott", "Room 2"]]
-renderNowCallingPatients(patients)
 
 bg = new Layer
 	backgroundColor: 'white'
@@ -298,4 +295,4 @@ firebase.onChange "/queues", (queues) ->
 				2, "Dr. Hudson's Schedule","on time", queue.doctor_hudson)
 				
 firebase.onChange "/now_paging", (queue) ->
-	renderNowCallingPatients()
+	renderNowCallingPatients(queue)
