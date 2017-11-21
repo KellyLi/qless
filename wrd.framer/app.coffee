@@ -11,11 +11,6 @@ firebase = new Firebase
 	secret: "V1PiKsbNoepuy6aXxinccYyvt08pQYanjlAzd7Gn"
 
 renderNowCallingPatients = (patients) ->
-	nowCalling = new Layer
-		width: 520
-		y: 301
-		backgroundColor: 'transparent'
-
 	nowCallingHeader = new TextLayer
 		parent: nowCalling
 		text: "Now Calling"
@@ -126,9 +121,9 @@ renderDate = (today) ->
 
 renderTime = (today) ->
 	if today.getHours() > 12
-		today.getHours() - 12 + ":" + ("00" + today.getMinutes()).slice(-2)
+		("00" + (today.getHours() - 12)).slice(-2) + ":" + ("00" + today.getMinutes()).slice(-2)
 	else
-		today.getHours() + ":" + ("00" + today.getMinutes()).slice(-2)
+		("00" + (today.getHours() - 12)).slice(-2)+ ":" + ("00" + today.getMinutes()).slice(-2)
 
 renderMeridian = (today) ->
 	if today.getHours() > 12
@@ -208,6 +203,11 @@ patientLists = new Layer
 	backgroundColor: 'transparent'
 	height: 608
 
+nowCalling = new Layer
+	width: 520
+	y: 301
+	backgroundColor: 'transparent'
+
 renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 	list = new Layer
 		width: 360
@@ -251,6 +251,9 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			waitColor = "#87807A"
 			borderColor = "#EDEFF2"
 
+		waitTime = (patient.predicted_start_time - (new Date).getTime())/60000
+		formattedTime= Math.round(waitTime) + " min"
+
 		patientCard = new Layer
 			width: 360
 			height: 138
@@ -272,7 +275,7 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			y: 25
 
 		patientWait = new TextLayer
-			text: (patient.predicted_start_time - (new Date).getTime())/60000
+			text: formattedTime
 			parent: patientCard
 			fontFamily: Utils.loadWebFont "Nunito Sans"
 			fontWeight: 600
@@ -289,4 +292,8 @@ firebase.onChange "/queues", (queues) ->
 	renderList(2, "Dr. Hudson's Schedule","on time", queues.doctor_hudson)
 
 firebase.onChange "/now_paging", (queue) ->
-	renderNowCallingPatients(queue)
+	for child in nowCalling.children
+		child.destroy()
+	firebase.get "/now_paging", (queue) ->
+		renderNowCallingPatients(queue)
+
