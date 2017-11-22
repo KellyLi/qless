@@ -13,13 +13,16 @@ class FirebaseManager:
 		path = "queues/" + doctor_name
 		return self.firebase.get(path, '')
 
+	def get_now_paging(self):
+		return self.firebase.get("now_paging", '')
+
 	def check_in_scheduled_user(self, doctor_name, user_index, current_time, predicted_start_time):
 		path = "queues/" + doctor_name + "/" + str(user_index)
 		self.firebase.put(path, "is_checked_in", True)
 		self.firebase.put(path, "check_in_time", current_time)
 		self.firebase.put(path, "predicted_start_time", predicted_start_time)
 
-	def add_scheduled_user(self, doctor_name, data):
+	def update_queue(self, doctor_name, data):
 		path = "queues/"
 		self.firebase.put(path, doctor_name, data)
 
@@ -33,6 +36,9 @@ class FirebaseManager:
 			}
 		}
 		self.firebase.patch('queues/walk_in', data)
+
+	def add_paging_user(self, index, data):
+		self.firebase.patch("now_paging", {index: data})
 
 	def get_users(self):
 		return self.firebase.get('users', '')

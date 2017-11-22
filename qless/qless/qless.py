@@ -23,8 +23,9 @@ def check_in_success():
 @app.route('/test')
 def test():
 	#queueManager.add_scheduled_user(20, "bruh", "doctor_hudson", 1510513232)
-	#queueManager.add_walk_in(6, "bruh")
-	#queueManager.check_in_scheduled(4)
+	#queueManager.add_walk_in(21, "bruvvv")
+	#queueManager.check_in_scheduled(20)
+	#queueManager.page_user(20, "roooom")
 	return '{}'
 
 if __name__ == "__main__":
