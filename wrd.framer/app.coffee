@@ -11,11 +11,6 @@ firebase = new Firebase
 	secret: "V1PiKsbNoepuy6aXxinccYyvt08pQYanjlAzd7Gn"
 
 renderNowCallingPatients = (patients) ->
-	nowCalling = new Layer
-		width: 520
-		y: 301
-		backgroundColor: 'transparent'
-		
 	nowCallingHeader = new TextLayer
 		parent: nowCalling
 		text: "Now Calling"
@@ -34,7 +29,7 @@ renderNowCallingPatients = (patients) ->
 			x: Align.center
 			y: 85 + i * 195
 			parent: nowCalling
-		
+
 		nowCallingPatientFade = new Layer
 			width: 420
 			height: 175
@@ -42,9 +37,9 @@ renderNowCallingPatients = (patients) ->
 			borderRadius: 12
 			opacity: .6
 			parent: nowCallingPatient
-			
+
 		patientName = new TextLayer
-			text: patient[0]
+			text: patient.name
 			parent: nowCallingPatient
 			fontFamily: Utils.loadWebFont "Nunito Sans"
 			fontWeight: 700
@@ -52,9 +47,9 @@ renderNowCallingPatients = (patients) ->
 			color: "#47525D"
 			x: 50
 			y: 35
-		
+
 		patientRoom = new TextLayer
-			text: patient[1]
+			text: patient.name # change to .room
 			parent: nowCallingPatient
 			fontFamily: Utils.loadWebFont "Nunito Sans"
 			fontWeight: 700
@@ -63,17 +58,17 @@ renderNowCallingPatients = (patients) ->
 			x: 50
 			y: 102
 
-	fadeIn  = new Animation nowCallingPatientFade,
-		opacity: .8
-		scale: 1.02
-	 
-	fadeOut = fadeIn.reverse()
-	 
-	# Alternate between the two animations 
-	fadeIn.on Events.AnimationEnd, fadeOut.start
-	fadeOut.on Events.AnimationEnd, fadeIn.start
-	 
-	fadeIn.start()
+		fadeIn  = new Animation nowCallingPatientFade,
+			opacity: .8
+			scale: 1.02
+
+		fadeOut = fadeIn.reverse()
+
+		# Alternate between the two animations
+		fadeIn.on Events.AnimationEnd, fadeOut.start
+		fadeOut.on Events.AnimationEnd, fadeIn.start
+
+		fadeIn.start()
 
 sidebar  = new Layer
 	width: 320
@@ -89,23 +84,23 @@ layer = new Layer
 today = new Date
 
 renderDate = (today) ->
-	daylist = [  
-		'Sunday'  
-		'Monday'  
-		'Tuesday'  
-		'Wednesday'  
-		'Thursday'  
-		'Friday'  
-		'Saturday'  
+	daylist = [
+		'Sunday'
+		'Monday'
+		'Tuesday'
+		'Wednesday'
+		'Thursday'
+		'Friday'
+		'Saturday'
 	]
 
-	monthlist = [  
-		'Jan'  
-		'Feb'  
-		'Mar'  
-		'Apr '  
-		'May'  
-		'Jun'  
+	monthlist = [
+		'Jan'
+		'Feb'
+		'Mar'
+		'Apr '
+		'May'
+		'Jun'
 		'Jul',
 		'Aug',
 		'Sept',
@@ -123,12 +118,12 @@ renderDate = (today) ->
 	else
 		day = today.getDay() + "th"
 	daylist[today.getDay()] + ", " + monthlist[today.getMonth()] + " " + day
-	
+
 renderTime = (today) ->
 	if today.getHours() > 12
-		today.getHours() - 12 + ":" + ("00" + today.getMinutes()).slice(-2)
+		("00" + (today.getHours() - 12)).slice(-2) + ":" + ("00" + today.getMinutes()).slice(-2)
 	else
-		today.getHours() + ":" + ("00" + today.getMinutes()).slice(-2)
+		("00" + (today.getHours() - 12)).slice(-2)+ ":" + ("00" + today.getMinutes()).slice(-2)
 
 renderMeridian = (today) ->
 	if today.getHours() > 12
@@ -166,9 +161,6 @@ meridian = new TextLayer
 	x: time.width
 	y: 80
 	color: 'white'
-
-patients = [["M. Scott", "Room 2"]]
-renderNowCallingPatients(patients)
 
 bg = new Layer
 	backgroundColor: 'white'
@@ -211,6 +203,11 @@ patientLists = new Layer
 	backgroundColor: 'transparent'
 	height: 608
 
+nowCalling = new Layer
+	width: 520
+	y: 301
+	backgroundColor: 'transparent'
+
 renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 	list = new Layer
 		width: 360
@@ -219,7 +216,7 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 		backgroundColor: 'transparent'
 		parent: patientLists
 		x: listPos * 440
-		
+
 	listHeader = new TextLayer
 		parent: list
 		text: header
@@ -243,17 +240,22 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			nameColor = "#AF6CD5"
 			waitColor = "#877A87"
 			borderColor = "#F4E7FF"
+			waitTime = (patient.predicted_start_time - (new Date).getTime())/60000
+			formattedTime = Math.round(waitTime) + " min"
 		else if patient.is_checked_in is true
 			bgColor = "#DAE7FF"
 			nameColor = "#4786FF"
 			waitColor = "#7A7C87"
 			borderColor = "#DAE7FF"
+			waitTime = (patient.predicted_start_time - (new Date).getTime())/60000
+			formattedTime = Math.round(waitTime) + " min"
 		else if patient.is_checked_in is false
 			bgColor = "#fff"
 			nameColor = "#3D464D"
 			waitColor = "#87807A"
 			borderColor = "#EDEFF2"
-	
+			formattedTime = "not checked in"
+
 		patientCard = new Layer
 			width: 360
 			height: 138
@@ -263,7 +265,7 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			parent: list
 			borderColor: borderColor
 			borderWidth: 2
-			
+
 		patientName = new TextLayer
 			text: patient.name
 			parent: patientCard
@@ -273,9 +275,9 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			color: nameColor
 			x: 30
 			y: 25
-		
+
 		patientWait = new TextLayer
-			text: (patient.predicted_start - (new Date).getTime())/60000
+			text: formattedTime
 			parent: patientCard
 			fontFamily: Utils.loadWebFont "Nunito Sans"
 			fontWeight: 600
@@ -284,16 +286,17 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			x: 30
 			y: 75
 
-firebase.onChange "/", (value) ->
+firebase.onChange "/queues", ->
 	for child in patientLists.children
 		child.destroy()
+	firebase.get "/queues", (queues) ->
+		renderList(0, "Walk-in Appointments","first come first serve", queues.walk_in, true)
+		renderList(1, "Dr. Martin's Schedule","on time", queues.doctor_martin)
+		renderList(2, "Dr. Hudson's Schedule","on time", queues.doctor_hudson)
 
-	firebase.get "/walk_in_queue", (value) ->
-		renderList(0, "Walk-in Appointments","first come first serve", value, true)
-	
-	firebase.get "/doctor_martin_queue", (value) ->
-		renderList(1, "Dr. Martin's Schedule","on time", value)
-	
-	firebase.get "/doctor_hudson_queue", (value) ->
-		renderList(2, "Dr. Hudson's Schedule","on time", value)
-	
+firebase.onChange "/now_paging", ->
+	for child in nowCalling.children
+		child.destroy()
+	firebase.get "/now_paging", (queue) ->
+		renderNowCallingPatients(queue)
+
