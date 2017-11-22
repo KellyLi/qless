@@ -26,6 +26,7 @@ def test():
 	#queueManager.add_walk_in(21, "bruvvv")
 	#queueManager.check_in_scheduled(20)
 	#queueManager.page_user(20, "roooom")
+	#queueManager.seen_user(20)
 	return '{}'
 
 if __name__ == "__main__":

@@ -105,6 +105,7 @@ class QueueManager:
 
 		if user:
 			user[u'room'] = room
+			user[u'doctor'] = doctor
 			queue_size = len(self.firebaseManager.get_now_paging())
 
 			# add user to now_paging
@@ -114,9 +115,26 @@ class QueueManager:
 			del queue[index]
 			self.firebaseManager.update_queue(doctor, queue)
 
-	# TODO: 
+	# logic to seen user (remove from now paging queue and add to seen queue)
 	def seen_user(self, user_id):
-		print('seen user')
+		users = self.firebaseManager.get_now_paging()
+		user = None
+
+		index = 0
+		for current_user in users:
+			if current_user.get('id') == user_id:
+				user = current_user
+				break
+			index = index + 1
+
+		if user:
+			# add user to seen
+			queue_size = len(self.firebaseManager.get_patients_seen())
+			self.firebaseManager.add_seen_user(queue_size, user)
+
+			# remove user from now_paging
+			del users[index]
+			self.firebaseManager.update_now_paging(users)
 
 	# TODO: helper function to get predicted start time from prediction model
 	def get_predicted_start_time(self):
