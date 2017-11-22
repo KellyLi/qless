@@ -22,7 +22,9 @@ def check_in_success():
 
 @app.route('/test')
 def test():
-	queueManager.check_in_scheduled(5)
+	#queueManager.add_scheduled_user(20, "bruh", "doctor_hudson", 1510513232)
+	#queueManager.add_walk_in(6, "bruh")
+	#queueManager.check_in_scheduled(4)
 	return '{}'
 
 if __name__ == "__main__":

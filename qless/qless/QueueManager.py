@@ -6,14 +6,11 @@ from FirebaseManager import FirebaseManager
 class QueueManager:
 	def __init__(self):
 		self.firebaseManager = FirebaseManager()
-		self.doctor_indexes = {}
 		self.users = {}
 
-		self.cache_doctors()
 		self.cache_users()
 
 		pprint(self.users)
-		pprint(self.doctor_indexes)
 
 	# get all users from db and store locally
 	def cache_users(self):
@@ -23,53 +20,68 @@ class QueueManager:
 			if user_id:
 				self.users[user_id] = db_user
 
-	# get all doctors from db and store locally
-	def cache_doctors(self):
-		queues = self.firebaseManager.get_queues()
-		doctor_index = 0
-		for queue in queues:
-			self.doctor_indexes[queue.keys()[0]] = doctor_index
-			doctor_index = doctor_index + 1
-
-	# TODO: logic to add scheduled user
+	# logic to add scheduled user
 	def add_scheduled_user(self, user_id, name, doctor_name, scheduled_start_time):
-		print('add scheduled user')
+		queue = self.firebaseManager.get_doctor_queue(doctor_name)
+
+		data = {
+			u'id': user_id,
+			u'check_in_time': -1,
+			u'is_checked_in': False,
+			u'name': name,
+			u'predicted_start_time': -1,
+			u'scheduled_start_time': scheduled_start_time
+		}
+
+		if scheduled_start_time >= queue[-1]['scheduled_start_time']:
+			queue.append(data)
+		elif scheduled_start_time <= queue[0]['scheduled_start_time']:
+			queue.insert(0, data)
+		else:
+			index = 0
+			for user in queue:
+				if scheduled_start_time < queue[index]['scheduled_start_time']:
+					queue.insert(index, data)
+					break
+				index = index + 1
+
+		self.firebaseManager.add_scheduled_user(doctor_name, queue)
 
 	# logic for walk in check in
-	def check_in_walk_in(self, user_id, name):
+	def add_walk_in(self, user_id, name):
 		predicted_wait_time = self.get_predicted_start_time()
 		queue = self.firebaseManager.get_walk_in_queue()
-		for user in queue.values():
+		for user in queue:
 			if user.get('id') and user.get('id') == user_id:
 				return False
-		self.firebaseManager.add_walk_in_user(user_id, name, self.get_current_millis(), predicted_wait_time)
+		self.firebaseManager.add_walk_in_user(len(queue), user_id, name, self.get_current_millis(), predicted_wait_time)
 		self.cache_users()
 		return True
 
 	# logic for scheduled check in
 	def check_in_scheduled(self, user_id):
 		queues = self.firebaseManager.get_queues()
-		current_user = None
+		user = None
 		doctor = None
 
 		# traverse through doctor queues for users
-		for queue in queues:
-			if 'walk_in' not in queue:
-				users = queue.values()[0]
+		for current_doctor in queues:
+			if 'walk_in' is not doctor:
+				users = queues[current_doctor]
 				user_index = 0
-				for user in users:
-					if user.get('id') == user_id:
-						current_user = user
-						doctor = queue.keys()[0]
+				for current_user in users:
+					if current_user.get('id') == user_id:
+						user = current_user
+						doctor = current_doctor
 						break
 					user_index = user_index + 1
-				if current_user:
+				if user:
 					break
 
-		if current_user:
+		if user:
 			# get predicted start time
 			predicted_wait_time = self.get_predicted_start_time()
-			self.firebaseManager.check_in_scheduled_user(self.doctor_indexes[doctor], doctor, user_index, self.get_current_millis(), predicted_wait_time)
+			self.firebaseManager.check_in_scheduled_user(doctor, user_index, self.get_current_millis(), predicted_wait_time)
 
 	# TODO: helper function to get predicted start time from prediction model
 	def get_predicted_start_time(self):
