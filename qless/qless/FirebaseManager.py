@@ -51,3 +51,25 @@ class FirebaseManager:
 
 	def get_users(self):
 		return self.firebase.get('users', '')
+
+	def add_user(self, user_id, name):
+		users = self.get_users()
+
+		# first check if user is existing
+		index = 0
+		for user in users:
+			if user.get('id') == user_id:
+				path = "users/" + str(index)
+				self.firebase.put(path, "id", user_id)
+				self.firebase.put(path, "name", name)
+				return
+			index = index + 1
+
+		# otherwise append new user
+		new_user = {
+			len(users): {
+				"id": user_id,
+				"name": name
+			}
+		}
+		self.firebase.patch("users", new_user)

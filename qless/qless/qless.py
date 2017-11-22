@@ -22,8 +22,8 @@ def check_in_success():
 
 @app.route('/test')
 def test():
+	#queueManager.add_walk_in(21, "bruvsssvv")
 	#queueManager.add_scheduled_user(20, "bruh", "doctor_hudson", 1510513232)
-	#queueManager.add_walk_in(21, "bruvvv")
 	#queueManager.check_in_scheduled(20)
 	#queueManager.page_user(20, "roooom")
 	#queueManager.seen_user(20)

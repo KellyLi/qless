@@ -10,8 +10,6 @@ class QueueManager:
 
 		self.cache_users()
 
-		pprint(self.users)
-
 	# get all users from db and store locally
 	def cache_users(self):
 		db_users = self.firebaseManager.get_users()
@@ -19,6 +17,7 @@ class QueueManager:
 			user_id = db_user.get('id')
 			if user_id:
 				self.users[user_id] = db_user
+		pprint(self.users)
 
 	# logic to add scheduled user
 	def add_scheduled_user(self, user_id, name, doctor_name, scheduled_start_time):
@@ -46,6 +45,7 @@ class QueueManager:
 				index = index + 1
 
 		self.firebaseManager.update_queue(doctor_name, queue)
+		self.firebaseManager.add_user(user_id, name)
 		self.cache_users()
 
 	# logic for walk in check in
@@ -56,6 +56,7 @@ class QueueManager:
 			if user.get('id') and user.get('id') == user_id:
 				return False
 		self.firebaseManager.add_walk_in_user(len(queue), user_id, name, self.get_current_millis(), predicted_wait_time)
+		self.firebaseManager.add_user(user_id, name)
 		self.cache_users()
 		return True
 
