@@ -1,0 +1,13 @@
+label {
+  margin-right: 12px;
+}
+
+h1 {
+  font-size: 18px;
+  margin: 24px 0;
+}
+
+input[type='date'],
+input[type='time'] {
+  -webkit-appearance: textfield;
+}

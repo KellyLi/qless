@@ -6,7 +6,7 @@ queueManager = QueueManager()
 
 @app.route('/')
 def index():
-	return render_template('checkin.html')
+	return render_template('index.html')
 
 @app.route('/checkin', methods=['POST'])
 def check_in_submit():
