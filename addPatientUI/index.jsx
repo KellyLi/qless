@@ -51,25 +51,35 @@ class SubmitButton extends React.Component {
   onSubmit = () => {
     const {
       isWalkIn,
-      name,
+      firstName,
+      lastName,
       scheduledStartDate,
       scheduledStartTime,
     } = this.props;
 
-    let date = null;
+    let start_date = null;
     if (!isWalkIn) {
       if (scheduledStartDate == null || scheduledStartTime == null) {
         alert('Please enter a date and time');
         return;
       }
       const time = scheduledStartTime.split(':');
-      date = moment(scheduledStartDate)
+      start_date = moment(scheduledStartDate)
         .hours(time[0])
         .minutes(time[1])
         .valueOf();
     }
 
-    // Make request to server here
+    axios({
+      method: 'post',
+      url: '/checkin',
+      data: {
+        firstName,
+        lastName,
+        isWalkIn,
+        scheduled_start_date: start_date,
+      },
+    });
   };
 }
 
@@ -78,7 +88,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       isWalkIn: false,
-      name: null,
+      lastName: null,
+      firstName: null,
       scheduledStartDate: null,
       scheduledStartTime: null,
     };
@@ -87,7 +98,14 @@ class App extends React.Component {
   render() {
     return (
       <Form>
-        <Input label="Name" onChange={name => this.setState({ name: name })} />
+        <Input
+          label="Last name"
+          onChange={name => this.setState({ firstName: name })}
+        />
+        <Input
+          label="First name"
+          onChange={name => this.setState({ lastName: name })}
+        />
         <Input
           label="Is Walk-in?"
           onChange={isWalkIn => this.setState({ isWalkIn: isWalkIn })}
