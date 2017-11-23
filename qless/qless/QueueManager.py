@@ -50,12 +50,13 @@ class QueueManager:
 
 	# logic for walk in check in
 	def add_walk_in(self, user_id, name):
-		predicted_wait_time = self.get_predicted_start_time()
+		current_time = self.get_current_millis()
+		predicted_wait_time = self.get_predicted_start_time(current_time, True, 'walk_in', None)
 		queue = self.firebaseManager.get_walk_in_queue()
 		for user in queue:
 			if user.get('id') and user.get('id') == user_id:
 				return False
-		self.firebaseManager.add_walk_in_user(len(queue), user_id, name, self.get_current_millis(), predicted_wait_time)
+		self.firebaseManager.add_walk_in_user(len(queue), user_id, name, current_time, predicted_wait_time)
 		self.firebaseManager.add_user(user_id, name)
 		self.cache_users()
 		return True
@@ -82,8 +83,9 @@ class QueueManager:
 
 		if user:
 			# get predicted start time
-			predicted_wait_time = self.get_predicted_start_time()
-			self.firebaseManager.check_in_scheduled_user(doctor, user_index, self.get_current_millis(), predicted_wait_time)
+			current_time = self.get_current_millis()
+			predicted_wait_time = self.get_predicted_start_time(current_time, False, doctor, user.get('scheduled_start_time'))
+			self.firebaseManager.check_in_scheduled_user(doctor, user_index, current_time, predicted_wait_time)
 
 	# logic to page user (remove from doctor queue and add to paging queue)
 	def page_user(self, user_id, room):
@@ -131,6 +133,7 @@ class QueueManager:
 		if user:
 			# add user to seen
 			queue_size = len(self.firebaseManager.get_patients_seen())
+			user['seen_time'] = self.get_current_millis()
 			self.firebaseManager.add_seen_user(queue_size, user)
 
 			# remove user from now_paging
@@ -138,7 +141,68 @@ class QueueManager:
 			self.firebaseManager.update_now_paging(users)
 
 	# TODO: helper function to get predicted start time from prediction model
-	def get_predicted_start_time(self):
+	def get_predicted_start_time(self, current_time, is_walk_in, doctor_name, appointment_time):
+		# 1. arrival_time, # number (minutes since 00:00)
+		arrival_time = current_time
+		arrival_time = self.get_current_millis()
+
+		# 2. weekday, # string ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun')
+		weekday = time.strftime("%A", time.gmtime(arrival_time/1000))
+		weekday = weekday.lower()[:3]
+
+		# 3. queue_length, # number
+		if is_walk_in:
+			queue = self.firebaseManager.get_walk_in_queue()
+		else:
+			queue = self.firebaseManager.get_doctor_queue(doctor_name)
+
+		# calculations done in seconds
+		date = time.strftime("%m/%d/%Y", time.gmtime(arrival_time/1000))
+		epoch_start_date = int(time.mktime(time.strptime(date, "%m/%d/%Y")))
+		epoch_end_date = epoch_start_date + (86400 - 1)
+
+		queue_length = 0;
+		for user in queue:
+			if is_walk_in:
+				queue_time = user.get('check_in_time')/1000
+			else:
+				queue_time = user.get('scheduled_start_time')/1000
+
+			if queue_time >= epoch_start_date and queue_time <= epoch_end_date:
+				queue_length = queue_length + 1
+
+		# 4. flow_rate, # number (people seen in last hour)
+		# calculations done in seconds
+		epoch_one_hour_ago = (arrival_time/1000) - 3600
+		seen_queue = self.firebaseManager.get_patients_seen()
+
+		if is_walk_in:
+			doctor_name = 'walk_in'
+
+		flow_rate = 0
+		for user in seen_queue:
+			if user.get('doctor') == doctor_name:
+				seen_time = user.get('seen_time')
+				if seen_time >= epoch_one_hour_ago and seen_time <= arrival_time:
+					flow_rate = flow_rate + 1
+
+		# 5. doctor, # string ('a', 'b', 'c', etc.)
+		if doctor_name == 'doctor_hudson':
+			doctor = 'a'
+		elif doctor_name == 'doctor_martin':
+			doctor = 'b'
+		else:
+			doctor = 'c'
+
+		# 6. appointment_time, # number (minutes since 00:00)
+		# use appointment_time
+		if is_walk_in:
+			appointment_time = None
+
+		# 7. isWalkIn, # boolean
+		# use is_walk_in
+
+		#return estimateWaitTime(arrival_time, weekday, queue_length, flow_rate, doctor, appointment_time, is_walk_in)
 		return -1
 
 	# helper function to get epoch current millis

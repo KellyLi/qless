@@ -28,6 +28,7 @@ def test():
 	#queueManager.check_in_scheduled(4)
 	#queueManager.page_user(20, "roooom")
 	#queueManager.seen_user(20)
+	queueManager.get_predicted_start_time(1, False, 'doctor_hudson', 1510513232)
 	return '{}'
 
 # user_id(int), name(str), doctor_name(str), scheduled_start_time(int)
