@@ -2,6 +2,7 @@ import time
 
 from pprint import pprint
 from FirebaseManager import FirebaseManager
+from rmodel import estimateWaitTime
 
 class QueueManager:
 	def __init__(self):
@@ -202,8 +203,16 @@ class QueueManager:
 		# 7. isWalkIn, # boolean
 		# use is_walk_in
 
-		#return estimateWaitTime(arrival_time, weekday, queue_length, flow_rate, doctor, appointment_time, is_walk_in)
-		return -1
+		estimate = estimateWaitTime(arrival_time, weekday, flow_rate, queue_length, doctor, appointment_time, is_walk_in)
+
+		# print somet stuff out
+		print("---")
+		print("estimated wait time: " + str(estimate))
+		print("doctor: " + str(doctor_name))
+		print("queue_length: " + str(queue_length))
+		print("flow_rate: " + str(flow_rate))
+
+		return estimate
 
 	# helper function to get epoch current millis
 	def get_current_millis(self):
