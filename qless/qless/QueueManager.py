@@ -14,6 +14,8 @@ class QueueManager:
 	# get all users from db and store locally
 	def cache_users(self):
 		db_users = self.firebaseManager.get_users()
+		if not db_users:
+			return
 		for db_user in db_users:
 			user_id = db_user.get('id')
 			if user_id:
