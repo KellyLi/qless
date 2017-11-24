@@ -1,12 +1,12 @@
 {
-  "version" : 13,
   "root" : {
-    "id" : "oJdP3VX0",
-    "fillColor" : "#fff",
     "__class" : "CanvasNode",
-    "parentid" : null,
     "children" : [
 
-    ]
-  }
+    ],
+    "fillColor" : "#fff",
+    "id" : "oJdP3VX0",
+    "parentid" : null
+  },
+  "version" : 13
 }

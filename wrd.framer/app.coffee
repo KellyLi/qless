@@ -3,6 +3,8 @@ Framer.Device.customize
 	devicePixelRatio: 1
 	screenWidth: 1920
 	screenHeight: 1080
+	deviceImageWidth: : 1920
+	deviceImageHeight: 1080
 
 {Firebase} = require "firebase/firebase"
 
@@ -49,7 +51,7 @@ renderNowCallingPatients = (patients) ->
 			y: 35
 
 		patientRoom = new TextLayer
-			text: patient.name # change to .room
+			text: patient.room
 			parent: nowCallingPatient
 			fontFamily: Utils.loadWebFont "Nunito Sans"
 			fontWeight: 700
@@ -81,8 +83,6 @@ layer = new Layer
 	height: 1080
 	image: "images/sidebar_bg.jpg"
 
-today = new Date
-
 renderDate = (today) ->
 	daylist = [
 		'Sunday'
@@ -109,14 +109,14 @@ renderDate = (today) ->
 		'Dec'
 	]
 
-	if today.getDay() is 1
-		day = today.getDay() + "st"
-	else if today.getDay() is 2
-		day = today.getDay() + "nd"
-	else if today.getDay() is 3
-		day = today.getDay() + "rd"
+	if today.getDate() is 1 or today.getDate() is 21
+		day = today.getDate() + "st"
+	else if today.getDate() is 2 or today.getDate() is 22
+		day = today.getDate() + "nd"
+	else if today.getDate() is 3 or 13 or today.getDate() is 23
+		day = today.getDate() + "rd"
 	else
-		day = today.getDay() + "th"
+		day = today.getDate() + "th"
 	daylist[today.getDay()] + ", " + monthlist[today.getMonth()] + " " + day
 
 renderTime = (today) ->
@@ -131,21 +131,10 @@ renderMeridian = (today) ->
 	else
 		"AM"
 
-date = new TextLayer
-	parent: sidebar
-	text: renderDate(today)
-	fontSize: 40
-	width: 520
-	textAlign: "left"
-	fontWeight: 500
-	color: 'white'
-	x: 50
-	fontFamily: Utils.loadWebFont "Nunito Sans"
-	y: 50
-
+now = new Date
 time = new TextLayer
 	parent: sidebar
-	text: renderTime(today)
+	text: renderTime(now)
 	fontSize: 130
 	textAlign: "left"
 	fontWeight: 100
@@ -157,10 +146,27 @@ time = new TextLayer
 
 meridian = new TextLayer
 	parent: time
-	text: renderMeridian(today)
+	text: renderMeridian(now)
 	x: time.width
 	y: 80
 	color: 'white'
+
+updateClock = ->
+	now = new Date
+	time.text = renderTime(now)
+	meridian.text = renderMeridian(now)
+
+date = new TextLayer
+	parent: sidebar
+	text: renderDate(new Date)
+	fontSize: 40
+	width: 520
+	textAlign: "left"
+	fontWeight: 500
+	color: 'white'
+	x: 50
+	fontFamily: Utils.loadWebFont "Nunito Sans"
+	y: 50
 
 bg = new Layer
 	backgroundColor: 'white'
@@ -289,10 +295,7 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 firebase.onChange "/queues", ->
 	for child in patientLists.children
 		child.destroy()
-	firebase.get "/queues", (queues) ->
-		renderList(0, "Walk-in Appointments","first come first serve", queues.walk_in, true)
-		renderList(1, "Dr. Martin's Schedule","on time", queues.doctor_martin)
-		renderList(2, "Dr. Hudson's Schedule","on time", queues.doctor_hudson)
+	renderAllQueues()
 
 firebase.onChange "/now_paging", ->
 	for child in nowCalling.children
@@ -300,3 +303,13 @@ firebase.onChange "/now_paging", ->
 	firebase.get "/now_paging", (queue) ->
 		renderNowCallingPatients(queue)
 
+renderAllQueues = ->
+	firebase.get "/queues", (queues) ->
+		renderList(0, "Walk-in Appointments","first come first serve", queues.walk_in, true)
+		renderList(1, "Dr. Martin's Schedule","on time", queues.doctor_martin)
+		renderList(2, "Dr. Hudson's Schedule","on time", queues.doctor_hudson)
+	updateClock()
+
+setInterval () -> 
+		renderAllQueues()
+	,60*1000
