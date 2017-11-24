@@ -1,13 +1,114 @@
+body {
+  background-image: url("/static/img/bg.jpg");
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.container {
+  font-family: 'Nunito Sans', sans-serif;
+  max-width: 824px;
+  margin: 50px auto;
+  background-color: #fff;
+  padding: 50px 60px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .08);
+}
+
 label {
   margin-right: 12px;
 }
 
 h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #47525D;
+}
+
+h3 {
   font-size: 18px;
-  margin: 24px 0;
+  color: #7B8994;
+}
+
+h2 {
+  font-size: 18px;
+  color: #47525D;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+form {
+  margin-bottom: 50px;
+}
+
+form .patient-info .form-group {
+  display: inline-block;
+  margin-right: 20px;
+  width: 45%;
+}
+
+form .patient-info .form-group .label {
+  display: block;
+  color: #47525D;
+}
+
+form .patient-info input {
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #E6E7E9;
+  height: 40px;
+}
+
+form input[type="checkbox"] {
+  height: 15px;
+}
+
+form .doctor-dropdown {
+  display: inline-block;
+  margin-right: 20px;
+  width: 45%;
+}
+
+form .doctor-dropdown select {
+  width: 100%;
+  border: 1px solid #E6E7E9;
+}
+
+form .doctor-dropdown label {
+  display: block;
+}
+
+form .time-selection {
+  display: inline-block;
+}
+
+form .time-selection label {
+  display: block;
+}
+
+form .time-selection input {
+  padding: 5px;
+  border: 1px solid #E6E7E9;
+  border-radius: 3px;
+  margin-right: 5px;
+}
+
+form button {
+  display: block;
+  padding: 6px 15px;
+  color: #fff;
+  background-color: #4786FF;
+  border: 1px solid #3868C3;
+  border-radius: 3px;
+  margin-top: 20px;
 }
 
 input[type='date'],
 input[type='time'] {
   -webkit-appearance: textfield;
+}
+
+.divider {
+  background-color: #E6E7E9;
+  width: 100px;
+  height: 4px;
+  margin: 30px 0;
 }

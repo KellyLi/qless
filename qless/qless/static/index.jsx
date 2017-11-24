@@ -28,7 +28,7 @@ class Input extends React.Component {
 class DoctorDropdown extends React.Component {
   render() {
     return (
-      <div className="form-group">
+      <div className="form-group doctor-dropdown">
         <label>Doctor</label>
         <select
           className="custom-select"
@@ -45,7 +45,7 @@ class DoctorDropdown extends React.Component {
 class DateTimeInput extends React.Component {
   render() {
     return (
-      <div className="form-group">
+      <div className="form-group time-selection">
         <label>{this.props.label}</label>
         <input
           type="date"
@@ -66,7 +66,7 @@ class SubmitButton extends React.Component {
   render() {
     return (
       <button type="button" onClick={this.onSubmit}>
-        Submit
+        Add Appointment
       </button>
     );
   }
@@ -276,36 +276,41 @@ class App extends React.Component {
     const database = firebase.database();
 
     database.ref('/queues/walk_in/').on('value', snapshot => {
-      this.setState({ walkInPatients: snapshot.val() || [] });
+      this.setState({ walkInPatients: snapshot.val() || []});
     });
     database.ref('/queues/doctor_martin/').on('value', snapshot => {
-      this.setState({ doctorMartinPatients: snapshot.val() || [] });
+      this.setState({ doctorMartinPatients: snapshot.val() || []});
     });
     database.ref('/queues/doctor_hudson/').on('value', snapshot => {
-      this.setState({ doctorHudsonPatients: snapshot.val() || [] });
+      this.setState({ doctorHudsonPatients: snapshot.val() || []});
     });
     database.ref('/now_paging/').on('value', snapshot => {
-      this.setState({ pagedPatients: snapshot.val() || [] });
+      this.setState({ pagedPatients: snapshot.val() || []});
     });
   }
 
   render() {
     return (
       <div>
-        <h1>Schedule New Patient</h1>
+        <h1>Silver Oaks Medical Clinic</h1>
+        <h3>Clinic Management System</h3>
+        <div className="divider"></div>
+        <h2>New Appointment</h2>
         <Form>
+          <div className="patient-info">
+            <Input
+              label="Patient Name"
+              onChange={name => this.setState({ name: name })}
+              value={this.state.name}
+            />
+            <Input
+              label="Healthcard Number"
+              onChange={id => this.setState({ id: id })}
+              value={this.state.id}
+            />
+          </div>
           <Input
-            label="Name"
-            onChange={name => this.setState({ name: name })}
-            value={this.state.name}
-          />
-          <Input
-            label="Card #"
-            onChange={id => this.setState({ id: id })}
-            value={this.state.id}
-          />
-          <Input
-            label="Is Walk-in?"
+            label="Walk-in Patient"
             onChange={isWalkIn => this.setState({ isWalkIn: isWalkIn })}
             type="checkbox"
             value={this.state.isWalkIn}
@@ -319,7 +324,7 @@ class App extends React.Component {
           {!this.state.isWalkIn ? (
             <DateTimeInput
               date={this.state.scheduledStartTime}
-              label="Scheduled Date"
+              label="Appointment Time"
               onDateChange={time => this.setState({ scheduledStartDate: time })}
               onTimeChange={time => this.setState({ scheduledStartTime: time })}
               date={this.state.scheduledStartDate}
@@ -328,13 +333,13 @@ class App extends React.Component {
           ) : null}
           <SubmitButton {...this.state} clearForm={this.clearForm} />
         </Form>
-        <h1>Walk In Patients</h1>
+        <h2>Walk In Patients</h2>
         <PatientTable patients={this.state.walkInPatients} isWalkIn={true} />
-        <h1>Doctor Martin's Patients</h1>
+        <h2>Doctor Martin's Patients</h2>
         <PatientTable patients={this.state.doctorMartinPatients} />
-        <h1>Doctor Hudson's Patients</h1>
+        <h2>Doctor Hudson's Patients</h2>
         <PatientTable patients={this.state.doctorHudsonPatients} />
-        <h1>Paged</h1>
+        <h2>Paging Patients</h2>
         <PatientTable patients={this.state.pagedPatients} isPaged={true} />
       </div>
     );
