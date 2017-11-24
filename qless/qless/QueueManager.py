@@ -56,10 +56,13 @@ class QueueManager:
 		current_time = self.get_current_millis()
 		predicted_wait_time = self.get_predicted_start_time(current_time, True, 'walk_in', None, user_id)
 		queue = self.firebaseManager.get_walk_in_queue()
-		for user in queue:
-			if user.get('id') and user.get('id') == user_id:
-				return False
-		self.firebaseManager.add_walk_in_user(len(queue), user_id, name, current_time, predicted_wait_time)
+		length = 0
+		if queue:
+			length = len(queue)
+			for user in queue:
+				if user.get('id') and user.get('id') == user_id:
+					return False
+		self.firebaseManager.add_walk_in_user(length, user_id, name, current_time, predicted_wait_time)
 		self.firebaseManager.add_user(user_id, name)
 		self.cache_users()
 		return True
@@ -175,10 +178,11 @@ class QueueManager:
 
 		# correct way of getting queue_length
 		queue_length = 0
-		for user in queue:
-			if user.get('id') == user_id:
-				break
-			queue_length = queue_length + 1
+		if queue:
+			for user in queue:
+				if user.get('id') == user_id:
+					break
+				queue_length = queue_length + 1
 
 		# 4. flow_rate, # number (people seen in last hour)
 		# calculations done in seconds
