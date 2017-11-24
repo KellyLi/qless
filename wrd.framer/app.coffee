@@ -125,7 +125,7 @@ renderTime = (today) ->
 	if today.getHours() > 12
 		("00" + (today.getHours() - 12)).slice(-2) + ":" + ("00" + today.getMinutes()).slice(-2)
 	else
-		("00" + (today.getHours() - 12)).slice(-2)+ ":" + ("00" + today.getMinutes()).slice(-2)
+		("00" + (today.getHours())).slice(-2)+ ":" + ("00" + today.getMinutes()).slice(-2)
 
 renderMeridian = (today) ->
 	if today.getHours() > 12
