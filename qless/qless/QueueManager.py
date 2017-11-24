@@ -18,7 +18,7 @@ class QueueManager:
 			user_id = db_user.get('id')
 			if user_id:
 				self.users[user_id] = db_user
-		pprint(self.users)
+		#pprint(self.users)
 
 	# logic to add scheduled user
 	def add_scheduled_user(self, user_id, name, doctor_name, scheduled_start_time):
@@ -145,12 +145,8 @@ class QueueManager:
 
 	# TODO: helper function to get predicted start time from prediction model
 	def get_predicted_start_time(self, current_time, is_walk_in, doctor_name, appointment_time):
-		# 1. arrival_time, # number (minutes since 00:00)
-		arrival_time = current_time
-		arrival_time = self.get_current_millis()
-
 		# 2. weekday, # string ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun')
-		weekday = time.strftime("%A", time.gmtime(arrival_time/1000))
+		weekday = time.strftime("%A", time.localtime(current_time/1000))
 		weekday = weekday.lower()[:3]
 
 		# 3. queue_length, # number
@@ -160,7 +156,7 @@ class QueueManager:
 			queue = self.firebaseManager.get_doctor_queue(doctor_name)
 
 		# calculations done in seconds
-		date = time.strftime("%m/%d/%Y", time.gmtime(arrival_time/1000))
+		date = time.strftime("%m/%d/%Y", time.localtime(current_time/1000))
 		epoch_start_date = int(time.mktime(time.strptime(date, "%m/%d/%Y")))
 		epoch_end_date = epoch_start_date + (86400 - 1)
 
@@ -176,7 +172,7 @@ class QueueManager:
 
 		# 4. flow_rate, # number (people seen in last hour)
 		# calculations done in seconds
-		epoch_one_hour_ago = (arrival_time/1000) - 3600
+		epoch_one_hour_ago = (current_time/1000) - 3600
 		seen_queue = self.firebaseManager.get_patients_seen()
 
 		if is_walk_in:
@@ -186,33 +182,50 @@ class QueueManager:
 		for user in seen_queue:
 			if user.get('doctor') == doctor_name:
 				seen_time = user.get('seen_time')
-				if seen_time >= epoch_one_hour_ago and seen_time <= arrival_time:
+				if seen_time >= epoch_one_hour_ago and seen_time <= current_time:
 					flow_rate = flow_rate + 1
+
+		# 1. arrival_time, # number (minutes since 00:00)
+		arrival_time = ((current_time/1000) - epoch_start_date)/60
 
 		# 5. doctor, # string ('a', 'b', 'c', etc.)
 		if doctor_name == 'doctor_hudson':
-			doctor = 'a'
-		elif doctor_name == 'doctor_martin':
-			doctor = 'b'
-		else:
 			doctor = 'c'
+		elif doctor_name == 'doctor_martin':
+			doctor = 'i'
+		else:
+			# walk_in
+			doctor = 'g'
 
 		# 6. appointment_time, # number (minutes since 00:00)
 		# use appointment_time
 		if is_walk_in:
-			appointment_time = None
+			appointment_time = arrival_time
+		else:
+			appointment_time = ((appointment_time/1000) - epoch_start_date)/60
 
 		# 7. isWalkIn, # boolean
 		# use is_walk_in
 
+		# print some stuff out
+		print("---")
+		print("arrival_time: " + str(arrival_time))
+		print("weekday: " + weekday)
+		print("flow_rate: " + str(flow_rate))
+		print("queue_length: " + str(queue_length))
+		print("doctor: " + doctor_name)
+		print("appointment_time: " + str(appointment_time))
+		print("is_walk_in: " + str(is_walk_in))
+
 		estimate = estimateWaitTime(arrival_time, weekday, flow_rate, queue_length, doctor, appointment_time, is_walk_in)
 
-		# print somet stuff out
-		print("---")
+		# print some stuff out
 		print("estimated wait time: " + str(estimate))
-		print("doctor: " + str(doctor_name))
-		print("queue_length: " + str(queue_length))
-		print("flow_rate: " + str(flow_rate))
+
+		estimate = estimate*60*1000 + current_time
+
+		# print some stuff out
+		print("estimated time: " + str(estimate))
 
 		return estimate
 
