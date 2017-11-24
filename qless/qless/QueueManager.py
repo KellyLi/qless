@@ -106,6 +106,8 @@ class QueueManager:
 					queue = users
 					break
 				index = index + 1
+			if user:
+				break
 
 		if user:
 			user[u'room'] = room
