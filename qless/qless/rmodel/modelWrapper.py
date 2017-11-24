@@ -19,4 +19,11 @@ def estimateWaitTime(
 			str(doctor), str(appointment_time), str(int(isWalkIn))]
 	cmd = [COMMAND, PATH] + args
 	result = subprocess.check_output(cmd, universal_newlines=True, cwd=dir)
-	return float(result.split(' ')[-1].strip())
+	prediction = float(result.split(' ')[-1].strip())
+	return padPrediction(prediction, queue_length)
+
+# Pad the prediction by 5 minutes for each person in line
+# Do this as model seems less sensitive to queue length as desired and
+# because we want to over-guess the wait time
+def padPrediction(prediction, queue_length):
+	return prediction + queue_length * 5
