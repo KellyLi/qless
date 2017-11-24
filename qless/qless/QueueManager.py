@@ -224,7 +224,7 @@ class QueueManager:
 		### hardcoding ###
 		flow_rate = 5
 		if not is_walk_in:
-			arrival_time = 540
+			arrival_time = appointment_time - 5
 
 		# print some stuff out
 		print("---")
