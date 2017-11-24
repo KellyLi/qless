@@ -137,17 +137,19 @@ class SubmitButton extends React.Component {
 
 class PatientTable extends React.Component {
   render() {
+    const patients = this.props.patients || [];
     return (
       <table className="table">
         <thead className="thead-light">
           <tr>
             <th>Name</th>
             {this.props.isWalkIn ? null : <th>Scheduled Time</th>}
+            {this.props.isPaged ? <th>Room</th> : null}
             <th />
           </tr>
         </thead>
         <tbody>
-          {this.props.patients.map((patient, i) => (
+          {patients.map((patient, i) => (
             <PatientRow
               key={i}
               {...patient}
@@ -172,7 +174,15 @@ class PatientRow extends React.Component {
       );
     } else if (this.props.isWalkIn || this.props.is_checked_in) {
       button = (
-        <button onClick={() => this.pagePatient(this.props.id)}>Page</button>
+        <select
+          className="custom-select"
+          onChange={e => this.pagePatient(this.props.id, e.target.value)}>
+          <option value="">Page to room</option>
+          <option value="Room A">A</option>
+          <option value="Room B">B</option>
+          <option value="Room C">C</option>
+          <option value="Room D">D</option>
+        </select>
       );
     } else {
       button = (
@@ -190,6 +200,7 @@ class PatientRow extends React.Component {
       <tr>
         <td>{this.props.name}</td>
         {this.props.isWalkIn ? null : <td>{scheduledTime}</td>}
+        {this.props.isPaged ? <td>{this.props.room}</td> : null}
         <td>{button}</td>
       </tr>
     );
@@ -206,10 +217,10 @@ class PatientRow extends React.Component {
     );
   }
 
-  pagePatient(id) {
+  pagePatient(id, room) {
     let params = new URLSearchParams();
     params.append('user_id', id);
-    params.append('room', 'Room A');
+    params.append('room', room);
     axios.post('/page', params).then(() =>
       notie.alert({
         type: 'success',

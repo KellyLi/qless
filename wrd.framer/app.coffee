@@ -3,7 +3,7 @@ Framer.Device.customize
 	devicePixelRatio: 1
 	screenWidth: 1920
 	screenHeight: 1080
-	deviceImageWidth: : 1920
+	deviceImageWidth: 1920
 	deviceImageHeight: 1080
 
 {Firebase} = require "firebase/firebase"
@@ -305,9 +305,16 @@ firebase.onChange "/now_paging", ->
 
 renderAllQueues = ->
 	firebase.get "/queues", (queues) ->
+		now = new Date()
+		today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0)
+		tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 0)
+
+		martinPatients = queues.doctor_martin.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf()
+		hudsonPatients = queues.doctor_hudson.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf()
 		renderList(0, "Walk-in Appointments","first come first serve", queues.walk_in, true)
-		renderList(1, "Dr. Martin's Schedule","on time", queues.doctor_martin)
-		renderList(2, "Dr. Hudson's Schedule","on time", queues.doctor_hudson)
+		renderList(1, "Dr. Martin's Schedule","on time", martinPatients)
+		renderList(2, "Dr. Hudson's Schedule","on time", hudsonPatients)
+
 	updateClock()
 
 setInterval () -> 

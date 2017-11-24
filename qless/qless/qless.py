@@ -8,28 +8,7 @@ queueManager = QueueManager()
 def index():
 	return render_template('index.html')
 
-@app.route('/checkin', methods=['POST'])
-def check_in_submit():
-	firstName = request.form['firstNameInput']
-	lastName = request.form['lastNameInput']
-	name = str(firstName + ' ' + lastName)
-	isWalkin = True if 'isWalkin' in request.form else False
-	return '{}'
-
-@app.route('/checkin/success')
-def check_in_success():
-	return render_template('success.html')
-
-@app.route('/test')
-def test():
-	#queueManager.add_walk_in(21, "bruvsssvv")
-	#queueManager.add_scheduled_user(20, "bruh", "doctor_hudson", 1510513232)
-	#queueManager.check_in_scheduled(20)
-	#queueManager.check_in_scheduled(4)
-	#queueManager.page_user(20, "roooom")
-	#queueManager.seen_user(20)
-	queueManager.get_predicted_start_time(1, False, 'doctor_hudson', 1510513232)
-	return '{}'
+#### ENDPOINTS ####
 
 # user_id(int), name(str), doctor_name(str), scheduled_start_time(int)
 @app.route('/schedule/add', methods=['POST'])
@@ -45,7 +24,7 @@ def schedule_add():
 		doctor_name = request.form.get('doctor_name')
 		scheduled_start_time = int(request.form.get('scheduled_start_time'))
 
-	if user_id and name and doctor_name and scheduled_start_time:
+	if user_id is not None and name and doctor_name and scheduled_start_time:
 		queueManager.add_scheduled_user(user_id, name, doctor_name, scheduled_start_time)
 
 	response = {
@@ -65,7 +44,7 @@ def schedule_check_in():
 	if request.form:
 		user_id = int(request.form.get('user_id'))
 
-	if user_id:
+	if user_id is not None:
 		queueManager.check_in_scheduled(user_id)
 
 	response = {
@@ -84,7 +63,7 @@ def walk_in():
 		user_id = int(request.form.get('user_id'))
 		name = request.form.get('name')
 
-	if user_id and name:
+	if user_id is not None and name:
 		queueManager.add_walk_in(user_id, name)
 
 	response = {
@@ -104,7 +83,7 @@ def page():
 		user_id = int(request.form.get('user_id'))
 		room = request.form.get('room')
 
-	if user_id and room:
+	if user_id is not None and room:
 		queueManager.page_user(user_id, room)
 
 	response = {
@@ -122,7 +101,7 @@ def seen():
 	if request.form:
 		user_id = int(request.form.get('user_id'))
 
-	if user_id:
+	if user_id is not None:
 		queueManager.seen_user(user_id)
 
 	response = {
@@ -133,3 +112,15 @@ def seen():
 
 if __name__ == "__main__":
 	app.run()
+
+#### for josh testing ####
+@app.route('/test')
+def test():
+	#queueManager.add_walk_in(21, "bruvsssvv")
+	#queueManager.add_scheduled_user(20, "bruh", "doctor_hudson", 1510513232)
+	#queueManager.check_in_scheduled(20)
+	#queueManager.check_in_scheduled(4)
+	#queueManager.page_user(20, "roooom")
+	#queueManager.seen_user(20)
+	#queueManager.get_predicted_start_time(1, False, 'doctor_hudson', 1510513232)
+	return '{}'
