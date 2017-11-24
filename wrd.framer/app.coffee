@@ -290,13 +290,17 @@ firebase.onChange "/queues", ->
 	for child in patientLists.children
 		child.destroy()
 	firebase.get "/queues", (queues) ->
+    now = Date.now()
+    today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0)
+
+    martinPatients = queus.walk_in.filter p -> p.scheduled_start_time > today.valueOf()
+    hudsonPatients = queus.walk_in.filter p -> p.scheduled_start_time > today.valueOf()
 		renderList(0, "Walk-in Appointments","first come first serve", queues.walk_in, true)
-		renderList(1, "Dr. Martin's Schedule","on time", queues.doctor_martin)
-		renderList(2, "Dr. Hudson's Schedule","on time", queues.doctor_hudson)
+		renderList(1, "Dr. Martin's Schedule","on time", martinPatients)
+		renderList(2, "Dr. Hudson's Schedule","on time", hudsonPatients)
 
 firebase.onChange "/now_paging", ->
 	for child in nowCalling.children
 		child.destroy()
 	firebase.get "/now_paging", (queue) ->
 		renderNowCallingPatients(queue)
-
