@@ -193,7 +193,7 @@ class PatientRow extends React.Component {
     }
 
     const scheduledTime = this.props.scheduled_start_time
-      ? moment(this.props.scheduled_start_time).format('YYYY-MM-DD HH:MM')
+      ? moment(this.props.scheduled_start_time).format('YYYY-MM-DD HH:mm')
       : 'N/A (Walk In)';
 
     return (
