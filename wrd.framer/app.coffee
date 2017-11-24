@@ -22,6 +22,8 @@ renderNowCallingPatients = (patients) ->
 		x: 50
 		fontFamily: Utils.loadWebFont "Nunito Sans"
 
+	if patients == null or patients == undefined
+		patients = []
 	for patient,i in patients
 		nowCallingPatient = new Layer
 			width: 420
@@ -311,9 +313,10 @@ renderAllQueues = ->
 		today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0)
 		tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 0)
 
-		martinPatients = queues.doctor_martin.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf()
-		hudsonPatients = queues.doctor_hudson.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf()
-		renderList(0, "Walk-in Appointments","first come first serve", queues.walk_in, true)
+		martinPatients = if queues then queues.doctor_martin.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf() else []
+		hudsonPatients = if queues then queues.doctor_hudson.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf() else []
+		walkInPatients = if queues then queues.walk_in else []
+		renderList(0, "Walk-in Appointments","first come first serve", walkInPatients, true)
 		renderList(1, "Dr. Martin's Schedule","on time", martinPatients)
 		renderList(2, "Dr. Hudson's Schedule","on time", hudsonPatients)
 
