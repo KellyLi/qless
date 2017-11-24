@@ -190,12 +190,12 @@ class QueueManager:
 
 		# 5. doctor, # string ('a', 'b', 'c', etc.)
 		if doctor_name == 'doctor_hudson':
-			doctor = 'c'
+			doctor = 'n'
 		elif doctor_name == 'doctor_martin':
-			doctor = 'i'
+			doctor = 'e'
 		else:
 			# walk_in
-			doctor = 'g'
+			doctor = 'a'
 
 		# 6. appointment_time, # number (minutes since 00:00)
 		# use appointment_time
