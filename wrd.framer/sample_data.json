@@ -100,7 +100,9 @@
         "scheduled_start_time": 1510513230,
         "predicted_start_time": 1510509630,
         "check_in_time": 1510510530,
-        "is_checked_in": true
+        "is_checked_in": true,
+        "room": "Room A",
+        "doctor": "walk_in"
       },
       {
         "id": 7,
@@ -108,7 +110,9 @@
         "scheduled_start_time": 1510513230,
           "predicted_start_time": 1510513470,
           "check_in_time": 1510514370,
-          "is_checked_in": true
+          "is_checked_in": true,
+          "room": "Room B",
+          "doctor": "doctor_hudson"
       }
     ],
     "patients_seen": [
@@ -118,7 +122,9 @@
           "scheduled_start_time": 1510513230,
           "predicted_start_time": 1510509630,
           "check_in_time": 1510510530,
-          "is_checked_in": true
+          "is_checked_in": true,
+          "room": "Room A",
+          "doctor": "walk_in"
         },
         {
           "id": 9,
@@ -126,7 +132,9 @@
           "scheduled_start_time": 1510513230,
           "predicted_start_time": 1510513470,
           "check_in_time": 1510514370,
-          "is_checked_in": true
+          "is_checked_in": true,
+          "room": "Room B",
+          "doctor": "doctor_hudson"
         }
     ]
 }
