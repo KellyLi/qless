@@ -143,6 +143,7 @@ class PatientTable extends React.Component {
           <tr>
             <th>Name</th>
             {this.props.isWalkIn ? null : <th>Scheduled Time</th>}
+            {this.props.isPaged ? <th>Room</th> : null}
             <th />
           </tr>
         </thead>
@@ -198,6 +199,7 @@ class PatientRow extends React.Component {
       <tr>
         <td>{this.props.name}</td>
         {this.props.isWalkIn ? null : <td>{scheduledTime}</td>}
+        {this.props.isPaged ? <td>{this.props.room}</td> : null}
         <td>{button}</td>
       </tr>
     );
