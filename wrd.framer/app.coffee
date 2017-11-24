@@ -313,9 +313,9 @@ renderAllQueues = ->
 		today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0)
 		tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 0)
 
-		martinPatients = if queues then queues.doctor_martin.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf() else []
-		hudsonPatients = if queues then queues.doctor_hudson.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf() else []
-		walkInPatients = if queues then queues.walk_in else []
+		martinPatients = if queues and queues.doctor_martin then queues.doctor_martin.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf() else []
+		hudsonPatients = if queues and queues.doctor_hudson then queues.doctor_hudson.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf() else []
+		walkInPatients = if queues and queues.walk_in then queues.walk_in else []
 		renderList(0, "Walk-in Appointments","first come first serve", walkInPatients, true)
 		renderList(1, "Dr. Martin's Schedule","on time", martinPatients)
 		renderList(2, "Dr. Hudson's Schedule","on time", hudsonPatients)
