@@ -172,7 +172,15 @@ class PatientRow extends React.Component {
       );
     } else if (this.props.isWalkIn || this.props.is_checked_in) {
       button = (
-        <button onClick={() => this.pagePatient(this.props.id)}>Page</button>
+        <select
+          className="custom-select"
+          onChange={e => this.pagePatient(this.props.id, e.target.value)}>
+          <option value="">Page to room</option>
+          <option value="Room A">A</option>
+          <option value="Room B">B</option>
+          <option value="Room C">C</option>
+          <option value="Room D">D</option>
+        </select>
       );
     } else {
       button = (
@@ -206,10 +214,10 @@ class PatientRow extends React.Component {
     );
   }
 
-  pagePatient(id) {
+  pagePatient(id, room) {
     let params = new URLSearchParams();
     params.append('user_id', id);
-    params.append('room', 'Room A');
+    params.append('room', room);
     axios.post('/page', params).then(() =>
       notie.alert({
         type: 'success',
