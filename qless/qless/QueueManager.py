@@ -54,7 +54,7 @@ class QueueManager:
 	# logic for walk in check in
 	def add_walk_in(self, user_id, name):
 		current_time = self.get_current_millis()
-		predicted_wait_time = self.get_predicted_start_time(current_time, True, 'walk_in', None)
+		predicted_wait_time = self.get_predicted_start_time(current_time, True, 'walk_in', None, user_id)
 		queue = self.firebaseManager.get_walk_in_queue()
 		for user in queue:
 			if user.get('id') and user.get('id') == user_id:
@@ -87,7 +87,7 @@ class QueueManager:
 		if user:
 			# get predicted start time
 			current_time = self.get_current_millis()
-			predicted_wait_time = self.get_predicted_start_time(current_time, False, doctor, user.get('scheduled_start_time'))
+			predicted_wait_time = self.get_predicted_start_time(current_time, False, doctor, user.get('scheduled_start_time'), user_id)
 			self.firebaseManager.check_in_scheduled_user(doctor, user_index, current_time, predicted_wait_time)
 
 	# logic to page user (remove from doctor queue and add to paging queue)
@@ -146,7 +146,7 @@ class QueueManager:
 			self.firebaseManager.update_now_paging(users)
 
 	# TODO: helper function to get predicted start time from prediction model
-	def get_predicted_start_time(self, current_time, is_walk_in, doctor_name, appointment_time):
+	def get_predicted_start_time(self, current_time, is_walk_in, doctor_name, appointment_time, user_id):
 		# 2. weekday, # string ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun')
 		weekday = time.strftime("%A", time.localtime(current_time/1000))
 		weekday = weekday.lower()[:3]
@@ -163,14 +163,22 @@ class QueueManager:
 		epoch_end_date = epoch_start_date + (86400 - 1)
 
 		queue_length = 0;
-		for user in queue:
-			if is_walk_in:
-				queue_time = user.get('check_in_time')/1000
-			else:
-				queue_time = user.get('scheduled_start_time')/1000
+		# below is wrong...this just gets queue size within the day...
+		# for user in queue:
+		# 	if is_walk_in:
+		# 		queue_time = user.get('check_in_time')/1000
+		# 	else:
+		# 		queue_time = user.get('scheduled_start_time')/1000
 
-			if queue_time >= epoch_start_date and queue_time <= epoch_end_date:
-				queue_length = queue_length + 1
+		# 	if queue_time >= epoch_start_date and queue_time <= epoch_end_date:
+		# 		queue_length = queue_length + 1
+
+		# correct way of getting queue_length
+		queue_length = 0
+		for user in queue:
+			if user.get('id') == user_id:
+				break
+			queue_length = queue_length + 1
 
 		# 4. flow_rate, # number (people seen in last hour)
 		# calculations done in seconds
@@ -208,6 +216,11 @@ class QueueManager:
 
 		# 7. isWalkIn, # boolean
 		# use is_walk_in
+
+		### hardcoding ###
+		flow_rate = 5
+		if not is_walk_in:
+			arrival_time = 540
 
 		# print some stuff out
 		print("---")
