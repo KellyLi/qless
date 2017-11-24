@@ -137,6 +137,7 @@ class SubmitButton extends React.Component {
 
 class PatientTable extends React.Component {
   render() {
+    const patients = this.props.patients || [];
     return (
       <table className="table">
         <thead className="thead-light">
@@ -148,7 +149,7 @@ class PatientTable extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.props.patients.map((patient, i) => (
+          {patients.map((patient, i) => (
             <PatientRow
               key={i}
               {...patient}
