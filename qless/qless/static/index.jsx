@@ -273,16 +273,16 @@ class App extends React.Component {
     const database = firebase.database();
 
     database.ref('/queues/walk_in/').on('value', snapshot => {
-      this.setState({ walkInPatients: snapshot.val() });
+      this.setState({ walkInPatients: snapshot.val() || [] });
     });
     database.ref('/queues/doctor_martin/').on('value', snapshot => {
-      this.setState({ doctorMartinPatients: snapshot.val() });
+      this.setState({ doctorMartinPatients: snapshot.val() || [] });
     });
     database.ref('/queues/doctor_hudson/').on('value', snapshot => {
-      this.setState({ doctorHudsonPatients: snapshot.val() });
+      this.setState({ doctorHudsonPatients: snapshot.val() || [] });
     });
     database.ref('/now_paging/').on('value', snapshot => {
-      this.setState({ pagedPatients: snapshot.val() });
+      this.setState({ pagedPatients: snapshot.val() || [] });
     });
   }
 
