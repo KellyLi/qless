@@ -240,6 +240,8 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 		fontFamily: Utils.loadWebFont "Nunito Sans"
 		y: 49
 
+	if patients == null or patients == undefined
+		patients = []
 	for patient,i in patients
 		if isWalkIn is true
 			bgColor = "#F4E7FF"
@@ -317,6 +319,6 @@ renderAllQueues = ->
 
 	updateClock()
 
-setInterval () -> 
+setInterval () ->
 		renderAllQueues()
 	,60*1000
