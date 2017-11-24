@@ -124,7 +124,8 @@
           "check_in_time": 1510510530,
           "is_checked_in": true,
           "room": "Room A",
-          "doctor": "walk_in"
+          "doctor": "walk_in",
+          "seen_time": 1510510530
         },
         {
           "id": 9,
@@ -134,7 +135,8 @@
           "check_in_time": 1510514370,
           "is_checked_in": true,
           "room": "Room B",
-          "doctor": "doctor_hudson"
+          "doctor": "doctor_hudson",
+          "seen_time": 1510514370
         }
     ]
 }
