@@ -8,28 +8,7 @@ queueManager = QueueManager()
 def index():
 	return render_template('index.html')
 
-@app.route('/checkin', methods=['POST'])
-def check_in_submit():
-	firstName = request.form['firstNameInput']
-	lastName = request.form['lastNameInput']
-	name = str(firstName + ' ' + lastName)
-	isWalkin = True if 'isWalkin' in request.form else False
-	return '{}'
-
-@app.route('/checkin/success')
-def check_in_success():
-	return render_template('success.html')
-
-@app.route('/test')
-def test():
-	#queueManager.add_walk_in(21, "bruvsssvv")
-	#queueManager.add_scheduled_user(20, "bruh", "doctor_hudson", 1510513232)
-	#queueManager.check_in_scheduled(20)
-	#queueManager.check_in_scheduled(4)
-	#queueManager.page_user(20, "roooom")
-	#queueManager.seen_user(20)
-	queueManager.get_predicted_start_time(1, False, 'doctor_hudson', 1510513232)
-	return '{}'
+#### ENDPOINTS ####
 
 # user_id(int), name(str), doctor_name(str), scheduled_start_time(int)
 @app.route('/schedule/add', methods=['POST'])
@@ -133,3 +112,15 @@ def seen():
 
 if __name__ == "__main__":
 	app.run()
+
+#### for josh testing ####
+@app.route('/test')
+def test():
+	#queueManager.add_walk_in(21, "bruvsssvv")
+	#queueManager.add_scheduled_user(20, "bruh", "doctor_hudson", 1510513232)
+	#queueManager.check_in_scheduled(20)
+	#queueManager.check_in_scheduled(4)
+	#queueManager.page_user(20, "roooom")
+	#queueManager.seen_user(20)
+	#queueManager.get_predicted_start_time(1, False, 'doctor_hudson', 1510513232)
+	return '{}'
