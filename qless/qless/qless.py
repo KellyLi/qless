@@ -45,7 +45,7 @@ def schedule_add():
 		doctor_name = request.form.get('doctor_name')
 		scheduled_start_time = int(request.form.get('scheduled_start_time'))
 
-	if user_id and name and doctor_name and scheduled_start_time:
+	if user_id is not None and name and doctor_name and scheduled_start_time:
 		queueManager.add_scheduled_user(user_id, name, doctor_name, scheduled_start_time)
 
 	response = {
@@ -65,7 +65,7 @@ def schedule_check_in():
 	if request.form:
 		user_id = int(request.form.get('user_id'))
 
-	if user_id:
+	if user_id is not None:
 		queueManager.check_in_scheduled(user_id)
 
 	response = {
@@ -84,7 +84,7 @@ def walk_in():
 		user_id = int(request.form.get('user_id'))
 		name = request.form.get('name')
 
-	if user_id and name:
+	if user_id is not None and name:
 		queueManager.add_walk_in(user_id, name)
 
 	response = {
@@ -104,7 +104,7 @@ def page():
 		user_id = int(request.form.get('user_id'))
 		room = request.form.get('room')
 
-	if user_id and room:
+	if user_id is not None and room:
 		queueManager.page_user(user_id, room)
 
 	response = {
@@ -122,7 +122,7 @@ def seen():
 	if request.form:
 		user_id = int(request.form.get('user_id'))
 
-	if user_id:
+	if user_id is not None:
 		queueManager.seen_user(user_id)
 
 	response = {
