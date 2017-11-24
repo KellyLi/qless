@@ -4,7 +4,6 @@ import os
 dir = os.path.dirname(__file__)
 
 COMMAND = 'Rscript'
-#PATH = os.path.join(dir, 'predictFromModel.R')
 PATH = 'predictFromModel.R'
 
 def estimateWaitTime(
@@ -21,4 +20,3 @@ def estimateWaitTime(
 	cmd = [COMMAND, PATH] + args
 	result = subprocess.check_output(cmd, universal_newlines=True, cwd=dir)
 	return float(result.split(' ')[-1].strip())
-
