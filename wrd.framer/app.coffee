@@ -115,7 +115,7 @@ renderDate = (today) ->
 		day = today.getDate() + "st"
 	else if today.getDate() is 2 or today.getDate() is 22
 		day = today.getDate() + "nd"
-	else if today.getDate() is 3 or 13 or today.getDate() is 23
+	else if today.getDate() is 3 or today.getDate() is 13 or today.getDate() is 23
 		day = today.getDate() + "rd"
 	else
 		day = today.getDate() + "th"
