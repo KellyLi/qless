@@ -12,6 +12,8 @@ firebase = new Firebase
 	projectID: "qless-74979"
 	secret: "V1PiKsbNoepuy6aXxinccYyvt08pQYanjlAzd7Gn"
 
+pagingSound = new Audio("sounds/paging_sound.mp3")
+
 renderNowCallingPatients = (patients) ->
 	nowCallingHeader = new TextLayer
 		parent: nowCalling
@@ -220,10 +222,14 @@ firebase.onChange "/queues", ->
 	renderAllQueues()
 
 firebase.onChange "/now_paging", ->
+	old_length = nowCalling.children.length
 	for child in nowCalling.children
 		child.destroy()
 	firebase.get "/now_paging", (queue) ->
 		renderNowCallingPatients(queue)
+		new_length = nowCalling.children.length
+		if new_length > old_length
+			pagingSound.play()
 
 renderAllQueues = ->
 	firebase.get "/queues", (queues) ->
