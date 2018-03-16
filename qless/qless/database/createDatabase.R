@@ -1,3 +1,5 @@
+library(dplyr)
+
 setwd("~/Documents/uni/FYDP/Data")
 data <- read.csv(
   'fydp_data_walkin_new_queue_length_03_09_2018.csv',
@@ -51,7 +53,8 @@ hist_data <- data.frame(
   month=data$month,
   seen_time=(data$arrival_time + data$wait_time),
   estimated_wait_time=predictions,
-  timestamp=data$timestamp
+  timestamp=data$timestamp,
+  has_been_fitted=rep(1, nrow(data))
 )
 
 setwd('~/Documents/uni/FYDP/qless/qless/qless/database')

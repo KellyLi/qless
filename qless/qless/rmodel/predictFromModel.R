@@ -39,9 +39,10 @@ getHistoricResiduals <- function() {
   dbClearResult(response)
   dbDisconnect(conn)
 
+  # Calculate residuals
   wait_time <- hist_df$seen_time - hist_df$arrival_time
   residuals <- wait_time - hist_df$estimated_wait_time
-  residuals
+  sign(residuals) * sqrt(abs(residuals))
 }
 
 transformPredictionToMinutes <- function(prediction) {
