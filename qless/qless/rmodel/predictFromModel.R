@@ -1,4 +1,5 @@
 library('forecast')
+library(DBI)
 
 args <- commandArgs(TRUE)
 arrival <- as.integer(args[1])
@@ -28,6 +29,21 @@ arimaPredict <- function(history, forecast_distance) {
   fcast$mean[-1]
 }
 
+getHistoricResiduals <- function() {
+  conn <- dbConnect(RSQLite::SQLite(), '../database/qless.db')
+  response <- dbSendQuery(
+    conn,
+    'SELECT * FROM qless ORDER BY timestamp DESC LIMIT 15;'
+  )
+  hist_df <- dbFetch(response)
+  dbClearResult(response)
+  dbDisconnect(conn)
+
+  wait_time <- hist_df$seen_time - hist_df$arrival_time
+  residuals <- wait_time - hist_df$estimated_wait_time
+  residuals
+}
+
 transformPredictionToMinutes <- function(prediction) {
   prediction^2
 }
@@ -51,7 +67,7 @@ estimateWaitTime = function(
     month=month
   )
 
-  historic_residuals <- c()
+  historic_residuals <- getHistoricResiduals();
   if (length(historic_residuals) < 15) {
     historic_residuals <- append(rep(0, 15 - length(historic_residuals)),
                                   historic_residuals)
