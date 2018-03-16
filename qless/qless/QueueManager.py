@@ -2,11 +2,13 @@ import time
 
 from pprint import pprint
 from FirebaseManager import FirebaseManager
+from DatabaseManager import DatabaseManager
 from rmodel import estimateWaitTime
 
 class QueueManager:
 	def __init__(self):
 		self.firebaseManager = FirebaseManager()
+		self.databaseManager = DatabaseManager()
 		self.users = {}
 
 		self.cache_users()
@@ -51,6 +53,11 @@ class QueueManager:
 		self.firebaseManager.add_user(user_id, name)
 		self.cache_users()
 
+		# log
+		self.databaseManager.log("add to scheduled: " + str(user_id) + " - " + name
+			+ " for " + doctor_name
+			+ " at " + str(scheduled_start_time))
+
 	# logic for walk in check in
 	def add_walk_in(self, user_id, name):
 		current_time = self.get_current_millis()
@@ -65,6 +72,10 @@ class QueueManager:
 		self.firebaseManager.add_walk_in_user(length, user_id, name, current_time, predicted_wait_time)
 		self.firebaseManager.add_user(user_id, name)
 		self.cache_users()
+
+		# log
+		self.databaseManager.log("add to walk in: " + str(user_id) + " - " + name)
+
 		return True
 
 	# logic for scheduled check in
@@ -92,6 +103,9 @@ class QueueManager:
 			current_time = self.get_current_millis()
 			predicted_wait_time = self.get_predicted_start_time(current_time, False, doctor, user.get('scheduled_start_time'), user_id)
 			self.firebaseManager.check_in_scheduled_user(doctor, user_index, current_time, predicted_wait_time)
+
+			# log
+			self.databaseManager.log("check in scheduled: " + str(user_id))
 
 	# logic to page user (remove from doctor queue and add to paging queue)
 	def page_user(self, user_id, room):
@@ -126,6 +140,9 @@ class QueueManager:
 			del queue[index]
 			self.firebaseManager.update_queue(doctor, queue)
 
+			# log
+			self.databaseManager.log("page: " + str(user_id) + " to " + str(room))
+
 	# logic to seen user (remove from now paging queue and add to seen queue)
 	def seen_user(self, user_id):
 		users = self.firebaseManager.get_now_paging()
@@ -147,6 +164,9 @@ class QueueManager:
 			# remove user from now_paging
 			del users[index]
 			self.firebaseManager.update_now_paging(users)
+
+			# log
+			self.databaseManager.log("seen: " + str(user_id))
 
 	# TODO: helper function to get predicted start time from prediction model
 	def get_predicted_start_time(self, current_time, is_walk_in, doctor_name, appointment_time, user_id):
@@ -227,24 +247,24 @@ class QueueManager:
 			arrival_time = appointment_time - 5
 
 		# print some stuff out
-		print("---")
-		print("arrival_time: " + str(arrival_time))
-		print("weekday: " + weekday)
-		print("flow_rate: " + str(flow_rate))
-		print("queue_length: " + str(queue_length))
-		print("doctor: " + doctor_name)
-		print("appointment_time: " + str(appointment_time))
-		print("is_walk_in: " + str(is_walk_in))
+		# print("---")
+		# print("arrival_time: " + str(arrival_time))
+		# print("weekday: " + weekday)
+		# print("flow_rate: " + str(flow_rate))
+		# print("queue_length: " + str(queue_length))
+		# print("doctor: " + doctor_name)
+		# print("appointment_time: " + str(appointment_time))
+		# print("is_walk_in: " + str(is_walk_in))
 
 		estimate = estimateWaitTime(arrival_time, weekday, flow_rate, queue_length, doctor, appointment_time, is_walk_in)
 
 		# print some stuff out
-		print("estimated wait time: " + str(estimate))
+		# print("estimated wait time: " + str(estimate))
 
 		estimate = estimate*60*1000 + current_time
 
 		# print some stuff out
-		print("estimated time: " + str(estimate))
+		# print("estimated time: " + str(estimate))
 
 		return estimate
 
