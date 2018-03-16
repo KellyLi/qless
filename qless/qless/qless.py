@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 from QueueManager import QueueManager
 
+DEBUG_MODE = True
+
 app = Flask(__name__)
 queueManager = QueueManager()
 
@@ -111,16 +113,4 @@ def seen():
 	return jsonify(response)
 
 if __name__ == "__main__":
-	app.run()
-
-#### for josh testing ####
-@app.route('/test')
-def test():
-	#queueManager.add_walk_in(21, "bruvsssvv")
-	#queueManager.add_scheduled_user(20, "bruh", "doctor_hudson", 1510513232)
-	#queueManager.check_in_scheduled(20)
-	#queueManager.check_in_scheduled(4)
-	#queueManager.page_user(20, "roooom")
-	#queueManager.seen_user(20)
-	#queueManager.get_predicted_start_time(1, False, 'doctor_hudson', 1510513232)
-	return '{}'
+	app.run(debug=DEBUG_MODE)
