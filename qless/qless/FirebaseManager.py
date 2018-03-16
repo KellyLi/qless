@@ -55,6 +55,9 @@ class FirebaseManager:
 	def add_user(self, user_id, name):
 		users = self.get_users()
 
+		if users is None:
+			users = []
+
 		# first check if user is existing
 		index = 0
 		for user in users:

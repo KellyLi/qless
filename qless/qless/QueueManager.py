@@ -37,7 +37,10 @@ class QueueManager:
 			u'scheduled_start_time': scheduled_start_time
 		}
 
-		if scheduled_start_time >= queue[-1]['scheduled_start_time']:
+		if queue is None:
+			queue = []
+			queue.append(data)
+		elif scheduled_start_time >= queue[-1]['scheduled_start_time']:
 			queue.append(data)
 		elif scheduled_start_time <= queue[0]['scheduled_start_time']:
 			queue.insert(0, data)
@@ -131,7 +134,8 @@ class QueueManager:
 		if user:
 			user[u'room'] = room
 			user[u'doctor'] = doctor
-			queue_size = len(self.firebaseManager.get_now_paging())
+			paging_queue = self.firebaseManager.get_now_paging()
+			queue_size = 0 if paging_queue is None else len(paging_queue)
 
 			# add user to now_paging
 			self.firebaseManager.add_paging_user(queue_size, user)
@@ -157,7 +161,8 @@ class QueueManager:
 
 		if user:
 			# add user to seen
-			queue_size = len(self.firebaseManager.get_patients_seen())
+			patients_seen_queue = self.firebaseManager.get_patients_seen()
+			queue_size = 0 if patients_seen_queue is None else len(patients_seen_queue)
 			user['seen_time'] = self.get_current_millis()
 			self.firebaseManager.add_seen_user(queue_size, user)
 
@@ -213,11 +218,13 @@ class QueueManager:
 			doctor_name = 'walk_in'
 
 		flow_rate = 0
-		for user in seen_queue:
-			if user.get('doctor') == doctor_name:
-				seen_time = user.get('seen_time')
-				if seen_time >= epoch_one_hour_ago and seen_time <= current_time:
-					flow_rate = flow_rate + 1
+
+		if seen_queue:
+			for user in seen_queue:
+				if user.get('doctor') == doctor_name:
+					seen_time = user.get('seen_time')
+					if seen_time >= epoch_one_hour_ago and seen_time <= current_time:
+						flow_rate = flow_rate + 1
 
 		# 1. arrival_time, # number (minutes since 00:00)
 		arrival_time = ((current_time/1000) - epoch_start_date)/60
