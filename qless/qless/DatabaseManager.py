@@ -2,7 +2,7 @@ import sqlite3
 import time
 import os.path
 
-DEBUG_MODE = True
+LOG_MODE = True
 
 class DatabaseManager:
 
@@ -18,7 +18,7 @@ class DatabaseManager:
 		return connection
 
 	def log(self, description):
-		if not DEBUG_MODE:
+		if not LOG_MODE:
 			return
 
 		connection = self.get_connection()
