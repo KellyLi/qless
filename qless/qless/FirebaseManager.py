@@ -32,6 +32,12 @@ class FirebaseManager:
 	def update_now_paging(self, data):
 		self.firebase.put('', "now_paging", data)
 
+	def update_seen_users(self, data):
+		self.firebase.put('', "patients_seen", data)
+
+	def update_users(self, data):
+		self.firebase.put('', "users", data)
+
 	def add_walk_in_user(self, index, user_id, name, current_time, predicted_start_time):
 		data = {
 			index: {

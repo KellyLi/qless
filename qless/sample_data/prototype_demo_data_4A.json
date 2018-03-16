@@ -1,0 +1,144 @@
+{
+  "now_paging" : [ {
+    "check_in_time" : 1511495199067,
+    "doctor" : "walk_in",
+    "id" : 3092834092,
+    "name" : "Josh",
+    "predicted_start_time" : 1.51149558683014E12,
+    "room" : "Room A"
+  }, {
+    "check_in_time" : 1511495230078,
+    "doctor" : "walk_in",
+    "id" : 43095340,
+    "name" : "Cassey",
+    "predicted_start_time" : 1.51149567063088E12,
+    "room" : "Room C"
+  } ],
+  "patients_seen" : [ {
+    "check_in_time" : 1511495208846,
+    "doctor" : "walk_in",
+    "id" : 239840392,
+    "name" : "Bob",
+    "predicted_start_time" : 1.51149565934076E12,
+    "room" : "Room B",
+    "seen_time" : 1511495215477
+  }, {
+    "check_in_time" : 1511495224357,
+    "doctor" : "walk_in",
+    "id" : 234832903,
+    "name" : "Kelly",
+    "predicted_start_time" : 1.51149560217826E12,
+    "room" : "Room C",
+    "seen_time" : 1511498292095
+  }, {
+    "check_in_time" : 1511498318783,
+    "doctor" : "doctor_hudson",
+    "id" : 928340923,
+    "is_checked_in" : true,
+    "name" : "Jessica",
+    "predicted_start_time" : 1.5115001512064E12,
+    "room" : "Room B",
+    "scheduled_start_time" : 1511448300000,
+    "seen_time" : 1511498325021
+  } ],
+  "queues" : {
+    "doctor_hudson" : [ {
+      "check_in_time" : -1,
+      "id" : 30480293,
+      "is_checked_in" : false,
+      "name" : "Janet",
+      "predicted_start_time" : -1,
+      "scheduled_start_time" : 1.511532E12
+    }, {
+      "check_in_time" : -1,
+      "id" : 329849032,
+      "is_checked_in" : false,
+      "name" : "Bob",
+      "predicted_start_time" : -1,
+      "scheduled_start_time" : 1.5115329E12
+    }, {
+      "check_in_time" : -1,
+      "id" : 2039840923809,
+      "is_checked_in" : false,
+      "name" : "Robert",
+      "predicted_start_time" : -1,
+      "scheduled_start_time" : 1.5115338E12
+    }, {
+      "check_in_time" : -1,
+      "id" : 298349023890,
+      "is_checked_in" : false,
+      "name" : "Francisco",
+      "predicted_start_time" : -1,
+      "scheduled_start_time" : 1.5115347E12
+    } ],
+    "doctor_martin" : [ {
+      "check_in_time" : -1,
+      "id" : 2039482093,
+      "is_checked_in" : false,
+      "name" : "Evan",
+      "predicted_start_time" : -1,
+      "scheduled_start_time" : 1.511532E12
+    }, {
+      "check_in_time" : -1,
+      "id" : 92384092,
+      "is_checked_in" : false,
+      "name" : "Ronnie",
+      "predicted_start_time" : -1,
+      "scheduled_start_time" : 1.5115329E12
+    }, {
+      "check_in_time" : -1,
+      "id" : 20938402398,
+      "is_checked_in" : false,
+      "name" : "Ervin",
+      "predicted_start_time" : -1,
+      "scheduled_start_time" : 1.5115338E12
+    }, {
+      "check_in_time" : -1,
+      "id" : 2304823904,
+      "is_checked_in" : false,
+      "name" : "Kelly",
+      "predicted_start_time" : -1,
+      "scheduled_start_time" : 1.5115347E12
+    } ]
+  },
+  "users" : [ {
+    "id" : 3092834092,
+    "name" : "Josh"
+  }, {
+    "id" : 239840392,
+    "name" : "Bob"
+  }, {
+    "id" : 234832903,
+    "name" : "Kelly"
+  }, {
+    "id" : 43095340,
+    "name" : "Cassey"
+  }, {
+    "id" : 2039482093,
+    "name" : "Evan"
+  }, {
+    "id" : 92384092,
+    "name" : "Ronnie"
+  }, {
+    "id" : 20938402398,
+    "name" : "Ervin"
+  }, {
+    "id" : 298349023890,
+    "name" : "Francisco"
+  }, {
+    "id" : 30480293,
+    "name" : "Janet"
+  }, {
+    "id" : 2039840923809,
+    "name" : "Robert"
+  }, {
+    "id" : 928340923,
+    "name" : "Jessica"
+  }, {
+    "id" : 2304823904,
+    "name" : "Kelly"
+  }, {
+    "id" : 329849032,
+    "name" : "Bob"
+  } ]
+}
