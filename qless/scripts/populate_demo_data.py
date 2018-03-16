@@ -4,11 +4,6 @@ sys.path.insert(0, '../qless/')
 from QueueManager import QueueManager
 from FirebaseManager import FirebaseManager
 
-import os.path
-
-package_dir = os.path.abspath(os.path.dirname(__file__))
-print(package_dir)
-
 queueManager = QueueManager()
 firebaseManager = FirebaseManager()
 
