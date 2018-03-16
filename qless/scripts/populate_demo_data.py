@@ -32,16 +32,16 @@ def populate_scheduled_users():
 	hour = 1000*60*60
 	half_hour = 1000*60*30
 
-	queueManager.add_scheduled_user(0, "K. Malone", "doctor_hudson", (time - hour))
-	queueManager.add_scheduled_user(1, "P. Beesley", "doctor_hudson", (time + half_hour))
+	queueManager.add_scheduled_user(0, "K. Malone", "doctor_hudson", (time + half_hour))
+	queueManager.add_scheduled_user(1, "P. Beesley", "doctor_hudson", (time + hour))
 	queueManager.add_scheduled_user(2, "A. Balone", "doctor_hudson", (time + 1.5*hour))
 	queueManager.add_scheduled_user(3, "C. Deesley", "doctor_hudson", (time + 2*hour))
 	print("	doctor_hudson users added")
 
-	queueManager.add_scheduled_user(4, "F. Galone", "doctor_martin", (time - half_hour))
-	queueManager.add_scheduled_user(5, "H. Jeesley", "doctor_martin", (time + half_hour))
-	queueManager.add_scheduled_user(6, "K. Lalone", "doctor_martin", (time + 1*hour))
-	queueManager.add_scheduled_user(7, "M. Neesley", "doctor_martin", (time + 1.5*hour))
+	queueManager.add_scheduled_user(4, "F. Galone", "doctor_martin", (time + half_hour))
+	queueManager.add_scheduled_user(5, "H. Jeesley", "doctor_martin", (time + 1.5*hour))
+	queueManager.add_scheduled_user(6, "K. Lalone", "doctor_martin", (time + 3*hour))
+	queueManager.add_scheduled_user(7, "M. Neesley", "doctor_martin", (time + 4*hour))
 	print("	doctor_martin users added")
 
 	print("populating scheduled users completed")
