@@ -12,14 +12,16 @@ firebase = new Firebase
 	projectID: "qless-74979"
 	secret: "V1PiKsbNoepuy6aXxinccYyvt08pQYanjlAzd7Gn"
 
+pagingSound = new Audio("sounds/paging_sound.mp3")
+
 renderNowCallingPatients = (patients) ->
 	nowCallingHeader = new TextLayer
 		parent: nowCalling
 		text: "Now Calling"
 		fontWeight: 800
-		fontSize: 48
+		fontSize: 64
 		color: 'white'
-		x: 50
+		x: Align.center
 		fontFamily: Utils.loadWebFont "Nunito Sans"
 
 	if patients == null or patients == undefined
@@ -31,7 +33,7 @@ renderNowCallingPatients = (patients) ->
 			backgroundColor: 'transparent'
 			borderRadius: 12
 			x: Align.center
-			y: 85 + i * 195
+			y: 150 + i * 195
 			parent: nowCalling
 
 		nowCallingPatientFade = new Layer
@@ -49,18 +51,8 @@ renderNowCallingPatients = (patients) ->
 			fontWeight: 700
 			fontSize: 42
 			color: "#47525D"
-			x: 50
-			y: 35
-
-		patientRoom = new TextLayer
-			text: patient.room
-			parent: nowCallingPatient
-			fontFamily: Utils.loadWebFont "Nunito Sans"
-			fontWeight: 700
-			fontSize: 32
-			color: "#47525D"
-			x: 50
-			y: 102
+			x: Align.center
+			y: Align.center
 
 		fadeIn  = new Animation nowCallingPatientFade,
 			opacity: .8
@@ -85,100 +77,15 @@ layer = new Layer
 	height: 1080
 	image: "images/sidebar_bg.jpg"
 
-renderDate = (today) ->
-	daylist = [
-		'Sunday'
-		'Monday'
-		'Tuesday'
-		'Wednesday'
-		'Thursday'
-		'Friday'
-		'Saturday'
-	]
-
-	monthlist = [
-		'Jan'
-		'Feb'
-		'Mar'
-		'Apr '
-		'May'
-		'Jun'
-		'Jul',
-		'Aug',
-		'Sept',
-		'Oct',
-		'Nov',
-		'Dec'
-	]
-
-	if today.getDate() is 1 or today.getDate() is 21
-		day = today.getDate() + "st"
-	else if today.getDate() is 2 or today.getDate() is 22
-		day = today.getDate() + "nd"
-	else if today.getDate() is 3 or today.getDate() is 13 or today.getDate() is 23
-		day = today.getDate() + "rd"
-	else
-		day = today.getDate() + "th"
-	daylist[today.getDay()] + ", " + monthlist[today.getMonth()] + " " + day
-
-renderTime = (today) ->
-	if today.getHours() > 12
-		("00" + (today.getHours() - 12)).slice(-2) + ":" + ("00" + today.getMinutes()).slice(-2)
-	else
-		("00" + (today.getHours())).slice(-2)+ ":" + ("00" + today.getMinutes()).slice(-2)
-
-renderMeridian = (today) ->
-	if today.getHours() > 12
-		"PM"
-	else
-		"AM"
-
-now = new Date
-time = new TextLayer
-	parent: sidebar
-	text: renderTime(now)
-	fontSize: 130
-	textAlign: "left"
-	fontWeight: 100
-	color: 'white'
-	x: 50
-	fontFamily: Utils.loadWebFont "Nunito Sans"
-	y: 104
-	width: 340
-
-meridian = new TextLayer
-	parent: time
-	text: renderMeridian(now)
-	x: time.width
-	y: 80
-	color: 'white'
-
-updateClock = ->
-	now = new Date
-	time.text = renderTime(now)
-	meridian.text = renderMeridian(now)
-
-date = new TextLayer
-	parent: sidebar
-	text: renderDate(new Date)
-	fontSize: 40
-	width: 520
-	textAlign: "left"
-	fontWeight: 500
-	color: 'white'
-	x: 50
-	fontFamily: Utils.loadWebFont "Nunito Sans"
-	y: 50
-
 bg = new Layer
 	backgroundColor: 'white'
 	width: 1400
 	height: 1080
 	x: 520
 
-clinicName = new TextLayer
+displayHeader = new TextLayer
 	fontFamily: Utils.loadWebFont "Nunito Sans"
-	text: 'Silver Oak Medical Centre'
+	text: 'Estimated Wait Times'
 	fontSize: 64
 	parent: bg
 	x: 80
@@ -186,44 +93,66 @@ clinicName = new TextLayer
 	color: "#47525D"
 	y: 55
 
+dividerh = new Layer
+	width: bg.width
+	height: 2
+	backgroundColor: "#D8D8D8"
+	parent: bg
+	y: 180
+
+dividerh = new Layer
+	width: bg.width
+	height: 2
+	backgroundColor: "#D8D8D8"
+	parent: bg
+	y: 300
+
+dividerv = new Layer
+	width: 2
+	height: bg.height
+	backgroundColor: "#D8D8D8"
+	parent: bg
+	y: 180
+	x: bg.width/3
+
+dividerv = new Layer
+	width: 2
+	height: bg.height
+	backgroundColor: "#D8D8D8"
+	parent: bg
+	y: 180
+	x: 2*bg.width/3
+
 tagline = new TextLayer
 	fontFamily: Utils.loadWebFont "Nunito Sans"
 	text: 'These are estimated wait times, we appreciate your patience!'
 	fontSize: 32
 	parent: bg
-	x: 80
+	x: Align.center
 	color: "#47525D"
-	y: 153
-
-divider = new TextLayer
-	width: 145
-	height: 6
-	backgroundColor: "#E6E7E9"
-	parent: bg
-	y: 236
-	x: 80
+	y: bg.height - 80
 
 patientLists = new Layer
-	width: 1241
+	width: bg.width
 	parent: bg
 	x: Align.center
-	y: 282
+	y: 230
 	backgroundColor: 'transparent'
 	height: 608
 
 nowCalling = new Layer
 	width: 520
-	y: 301
+	y: 50
 	backgroundColor: 'transparent'
 
-renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
+renderList = (listPos, header, patients, isWalkIn = false) ->
 	list = new Layer
 		width: 360
 		y: 0
 		height: 608
 		backgroundColor: 'transparent'
 		parent: patientLists
-		x: listPos * 440
+		x: 53 + listPos * 463
 
 	listHeader = new TextLayer
 		parent: list
@@ -232,15 +161,6 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 		fontSize: 32
 		color: '#47525D'
 		fontFamily: Utils.loadWebFont "Nunito Sans"
-
-	subtitle = new TextLayer
-		parent: list
-		text: subtitle
-		fontWeight: 500
-		fontSize: 32
-		color: '#7B8994'
-		fontFamily: Utils.loadWebFont "Nunito Sans"
-		y: 49
 
 	if patients == null or patients == undefined
 		patients = []
@@ -271,7 +191,7 @@ renderList = (listPos, header, subtitle, patients, isWalkIn = false) ->
 			height: 138
 			backgroundColor: bgColor
 			borderRadius: 12
-			y: subtitle.y + subtitle.height + 40 + 158 * i
+			y: 120 + 158 * i
 			parent: list
 			borderColor: borderColor
 			borderWidth: 2
@@ -302,10 +222,14 @@ firebase.onChange "/queues", ->
 	renderAllQueues()
 
 firebase.onChange "/now_paging", ->
+	old_length = nowCalling.children.length
 	for child in nowCalling.children
 		child.destroy()
 	firebase.get "/now_paging", (queue) ->
 		renderNowCallingPatients(queue)
+		new_length = nowCalling.children.length
+		if new_length > old_length
+			pagingSound.play()
 
 renderAllQueues = ->
 	firebase.get "/queues", (queues) ->
@@ -316,11 +240,9 @@ renderAllQueues = ->
 		martinPatients = if queues and queues.doctor_martin then queues.doctor_martin.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf() else []
 		hudsonPatients = if queues and queues.doctor_hudson then queues.doctor_hudson.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf() else []
 		walkInPatients = if queues and queues.walk_in then queues.walk_in else []
-		renderList(0, "Walk-in Appointments","first come first serve", walkInPatients, true)
-		renderList(1, "Dr. Martin's Schedule","on time", martinPatients)
-		renderList(2, "Dr. Hudson's Schedule","on time", hudsonPatients)
-
-	updateClock()
+		renderList(0, "Walk-in Appointments", walkInPatients, true)
+		renderList(1, "Dr. Martin's Schedule", martinPatients)
+		renderList(2, "Dr. Hudson's Schedule", hudsonPatients)
 
 setInterval () ->
 		renderAllQueues()
