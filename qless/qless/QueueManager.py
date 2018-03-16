@@ -73,7 +73,7 @@ class QueueManager:
 			for user in queue:
 				if user.get('id') and user.get('id') == user_id:
 					return False
-		self.firebaseManager.add_walk_in_user(length, user_id, name, current_time, predicted_wait_time)
+		self.firebaseManager.add_walk_in_user(length, user_id, name, current_time, predicted_wait_time, predicted_wait_time+(1000*60*15))
 		self.firebaseManager.add_user(user_id, name)
 		self.cache_users()
 
@@ -106,7 +106,7 @@ class QueueManager:
 			# get predicted start time
 			current_time = self.get_current_millis()
 			predicted_wait_time = self.get_predicted_start_time(current_time, False, doctor, user.get('scheduled_start_time'), user_id)
-			self.firebaseManager.check_in_scheduled_user(doctor, user_index, current_time, predicted_wait_time)
+			self.firebaseManager.check_in_scheduled_user(doctor, user_index, current_time, predicted_wait_time, predicted_wait_time+(1000*60*15))
 
 			# log
 			self.databaseManager.log("check in scheduled: " + str(user_id))
