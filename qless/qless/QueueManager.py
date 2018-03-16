@@ -174,7 +174,7 @@ class QueueManager:
 			# log
 			self.databaseManager.log("seen: " + str(user_id))
 
-	# TODO: helper function to get predicted start time from prediction model
+	# helper function to get predicted start time from prediction model
 	def get_predicted_start_time(self, current_time, is_walk_in, doctor_name, appointment_time, user_id):
 		# 2. weekday, # string ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun')
 		weekday = time.strftime("%A", time.localtime(current_time/1000))

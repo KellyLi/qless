@@ -2,7 +2,7 @@ import sqlite3
 import time
 import os.path
 
-LOG_MODE = True
+LOG_MODE = False
 
 class DatabaseManager:
 
