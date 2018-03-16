@@ -62,8 +62,9 @@ class QueueManager:
 			+ " at " + str(scheduled_start_time))
 
 	# logic for walk in check in
-	def add_walk_in(self, user_id, name):
-		current_time = self.get_current_millis()
+	def add_walk_in(self, user_id, name, current_time=-1):
+		if current_time < 0:
+			current_time = self.get_current_millis()
 		predicted_wait_time = self.get_predicted_start_time(current_time, True, 'walk_in', None, user_id)
 		queue = self.firebaseManager.get_walk_in_queue()
 		length = 0
