@@ -7,11 +7,19 @@ class DatabaseManager:
 
 	def get_connection(self):
 		sqlite_file = 'database/qless.db'
-		connection = sqlite3.connect(sqlite_file)
+		try:
+			connection = sqlite3.connect(sqlite_file)
+		except:
+			return None
 		return connection
 
 	def log(self, description):
 		connection = self.get_connection()
+
+		if connection is None:
+			print("log: couldn't connect to sqlite3")
+			return
+
 		c = connection.cursor()
 
 		try:
