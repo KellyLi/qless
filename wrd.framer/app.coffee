@@ -174,7 +174,6 @@ renderList = (listPos, header, patients, isWalkIn = false) ->
 			patientsToDisplay.push(patient)
 
 	for patient,i in patientsToDisplay
-		print(patient.name, patient.is_checked_in)
 		if isWalkIn is true
 			bgColor = "#F4E7FF"
 			nameColor = "#AF6CD5"
@@ -182,10 +181,12 @@ renderList = (listPos, header, patients, isWalkIn = false) ->
 			borderColor = "#F4E7FF"
 			maxWaitTime = (patient.predicted_start_time_max - (new Date).getTime())/60000
 			minWaitTime = (patient.predicted_start_time_min - (new Date).getTime())/60000
-			detail = round5(minWaitTime) + '-' + round5(maxWaitTime) + " min"
+			if minWaitTime >= 0
+				detail = round5(minWaitTime) + '-' + round5(maxWaitTime) + " min"
+			else 
+				detail = 'less than ' + round5(maxWaitTime) + " min wait"
 
 		if patient.is_checked_in is true 
-			print('here')
 			bgColor = "#DAE7FF"
 			nameColor = "#4786FF"
 			waitColor = "#7A7C87"
@@ -198,7 +199,7 @@ renderList = (listPos, header, patients, isWalkIn = false) ->
 				ampm = 'AM'
 			hours = hours % 12;
 			hours = hours ? hours : 12;
-			detail = "Scheduled at " + hours + ":" + apptTime.getMinutes() + ' ' + ampm
+			detail = "Appt at " + hours + ":" + apptTime.getMinutes() + ' ' + ampm
 
 		if isWalkIn is true or patient.is_checked_in is true 
 			patientCard = new Layer
