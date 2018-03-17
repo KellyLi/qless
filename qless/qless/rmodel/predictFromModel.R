@@ -1,5 +1,6 @@
 library('forecast')
 library(DBI)
+library(dplyr)
 
 args <- commandArgs(TRUE)
 arrival <- as.integer(args[1])
@@ -26,7 +27,7 @@ linearRegressionPredict <- function(predictors) {
 arimaPredict <- function(history, forecast_distance) {
   refit <- Arima(history, model=fit)
   fcast <- forecast(refit, h=forecast_distance)
-  fcast$mean[-1]
+  last(fcast$mean)
 }
 
 getHistoricResiduals <- function() {
