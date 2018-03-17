@@ -14,6 +14,9 @@ firebase = new Firebase
 
 pagingSound = new Audio("sounds/paging_sound.mp3")
 
+round5 = (x) ->
+	return Math.ceil(x/5)*5;
+
 renderNowCallingPatients = (patients) ->
 	nowCallingHeader = new TextLayer
 		parent: nowCalling
@@ -164,57 +167,69 @@ renderList = (listPos, header, patients, isWalkIn = false) ->
 
 	if patients == null or patients == undefined
 		patients = []
+
+	patientsToDisplay = []
 	for patient,i in patients
+		if isWalkIn is true or patient.is_checked_in is true
+			patientsToDisplay.push(patient)
+
+	for patient,i in patientsToDisplay
+		print(patient.name, patient.is_checked_in)
 		if isWalkIn is true
 			bgColor = "#F4E7FF"
 			nameColor = "#AF6CD5"
 			waitColor = "#877A87"
 			borderColor = "#F4E7FF"
-			waitTime = (patient.predicted_start_time - (new Date).getTime())/60000
-			formattedTime = Math.round(waitTime) + " min"
-		else if patient.is_checked_in is true
+			maxWaitTime = (patient.predicted_start_time_max - (new Date).getTime())/60000
+			minWaitTime = (patient.predicted_start_time_min - (new Date).getTime())/60000
+			detail = round5(minWaitTime) + '-' + round5(maxWaitTime) + " min"
+
+		if patient.is_checked_in is true 
+			print('here')
 			bgColor = "#DAE7FF"
 			nameColor = "#4786FF"
 			waitColor = "#7A7C87"
 			borderColor = "#DAE7FF"
-			waitTime = (patient.predicted_start_time - (new Date).getTime())/60000
-			formattedTime = Math.round(waitTime) + " min"
-		else if patient.is_checked_in is false
-			bgColor = "#fff"
-			nameColor = "#3D464D"
-			waitColor = "#87807A"
-			borderColor = "#EDEFF2"
-			formattedTime = "not checked in"
+			apptTime = new Date(patient.predicted_start_time);
+			hours = apptTime.getHours()
+			if hours >= 12
+				ampm = 'PM'
+			else
+				ampm = 'AM'
+			hours = hours % 12;
+			hours = hours ? hours : 12;
+			detail = "Scheduled at " + hours + ":" + apptTime.getMinutes() + ' ' + ampm
 
-		patientCard = new Layer
-			width: 360
-			height: 138
-			backgroundColor: bgColor
-			borderRadius: 12
-			y: 120 + 158 * i
-			parent: list
-			borderColor: borderColor
-			borderWidth: 2
+		if isWalkIn is true or patient.is_checked_in is true 
+			patientCard = new Layer
+				width: 360
+				height: 138
+				backgroundColor: bgColor
+				borderRadius: 12
+				y: 120 + 158 * i
+				parent: list
+				borderColor: borderColor
+				borderWidth: 2
+	
+			patientName = new TextLayer
+				text: patient.name
+				parent: patientCard
+				fontFamily: Utils.loadWebFont "Nunito Sans"
+				fontWeight: 700
+				fontSize: 32
+				color: nameColor
+				x: 30
+				y: 25
 
-		patientName = new TextLayer
-			text: patient.name
-			parent: patientCard
-			fontFamily: Utils.loadWebFont "Nunito Sans"
-			fontWeight: 700
-			fontSize: 32
-			color: nameColor
-			x: 30
-			y: 25
-
-		patientWait = new TextLayer
-			text: formattedTime
-			parent: patientCard
-			fontFamily: Utils.loadWebFont "Nunito Sans"
-			fontWeight: 600
-			fontSize: 28
-			color: waitColor
-			x: 30
-			y: 75
+			detail = new TextLayer
+				text: detail
+				parent: patientCard
+				fontFamily: Utils.loadWebFont "Nunito Sans"
+				fontWeight: 600
+				fontSize: 28
+				color: waitColor
+				x: 30
+				y: 75
 
 firebase.onChange "/queues", ->
 	for child in patientLists.children
@@ -240,6 +255,10 @@ renderAllQueues = ->
 		martinPatients = if queues and queues.doctor_martin then queues.doctor_martin.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf() else []
 		hudsonPatients = if queues and queues.doctor_hudson then queues.doctor_hudson.filter (p) -> p.scheduled_start_time > today.valueOf() and p.scheduled_start_time < tomorrow.valueOf() else []
 		walkInPatients = if queues and queues.walk_in then queues.walk_in else []
+		
+		
+		martinPatients = if queues and queues.doctor_martin then queues.doctor_martin else []
+		hudsonPatients = if queues and queues.doctor_hudson then queues.doctor_hudson else []
 		renderList(0, "Walk-in Appointments", walkInPatients, true)
 		renderList(1, "Dr. Martin's Schedule", martinPatients)
 		renderList(2, "Dr. Hudson's Schedule", hudsonPatients)
