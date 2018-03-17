@@ -21,7 +21,8 @@ linearRegressionPredict <- function(predictors) {
   pred[pred < 0] <- 0
   lwr <- pred[1, 2]
   upr <- pred[1, 3]
-  c(lwr, upr)
+  avg <- pred[1, 1]
+  c(lwr, upr, avg)
 }
 
 arimaPredict <- function(history, forecast_distance) {
