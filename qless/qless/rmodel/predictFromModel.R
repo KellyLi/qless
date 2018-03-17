@@ -75,7 +75,11 @@ estimateWaitTime = function(
   }
  
   lr_prediction <- linearRegressionPredict(df)
-  arima_correction <- arimaPredict(historic_residuals, queue_length)
+  arima_correction <- if (queue_length > 0) {
+    arimaPredict(historic_residuals, queue_length)
+  } else {
+    0
+  }
   prediction <- lr_prediction + arima_correction
   roundToNearestFive(transformPredictionToMinutes(prediction))
 }
