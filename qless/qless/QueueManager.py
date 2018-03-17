@@ -238,6 +238,9 @@ class QueueManager:
 		month = time.strptime(month_as_str, '%b').tm_mon
 
 		estimate = estimateWaitTime(arrival_time, weekday, flow_rate, queue_length, doctor, appointment_time, is_walk_in, num_doctors, month)
+		print(estimate)
+		print(arrival_time, weekday, flow_rate, queue_length, doctor, appointment_time, is_walk_in, num_doctors, month)
+
 
 		if len(estimate) is 2:
 			# convert to millis

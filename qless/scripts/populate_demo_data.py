@@ -51,6 +51,7 @@ def populate_scheduled_users():
 def populate_walk_in_users():
 	print("populating walk in users...")
 
+	# time is all in millis
 	time = queueManager.get_current_millis()
 
 	queueManager.add_walk_in(8, "W1", current_time=time - half_hour);
@@ -61,8 +62,14 @@ def populate_walk_in_users():
 
 def check_in_scheduled_users():
 	print("checking in scheduled users...")
+	queueManager.check_in_scheduled(0)
+	queueManager.check_in_scheduled(1)
+	queueManager.check_in_scheduled(2)
+	queueManager.check_in_scheduled(3)
 	queueManager.check_in_scheduled(4)
 	queueManager.check_in_scheduled(5)
+	queueManager.check_in_scheduled(6)
+	queueManager.check_in_scheduled(7)
 	print("checking scheduled users completed")
 
 ###############################################
