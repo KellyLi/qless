@@ -242,7 +242,7 @@ class QueueManager:
 		print(arrival_time, weekday, flow_rate, queue_length, doctor, appointment_time, is_walk_in, num_doctors, month)
 
 
-		if len(estimate) is 2:
+		if len(estimate) >= 2:
 			# convert to millis
 			lower_bound = estimate[0]*60*1000 + arrival_time_millis
 			upper_bound = estimate[1]*60*1000 + arrival_time_millis
