@@ -43,7 +43,7 @@ def populate_scheduled_users():
 	queueManager.add_scheduled_user(4, "M1", "doctor_martin", (time + half_hour))
 	queueManager.add_scheduled_user(5, "M2", "doctor_martin", (time + 1.5*hour))
 	queueManager.add_scheduled_user(6, "M3", "doctor_martin", (time + 3*hour))
-	queueManager.add_scheduled_user(7, "M3", "doctor_martin", (time + 4*hour))
+	queueManager.add_scheduled_user(7, "M4", "doctor_martin", (time + 4*hour))
 	print("	doctor_martin users added")
 
 	print("populating scheduled users completed")
