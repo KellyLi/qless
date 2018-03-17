@@ -59,9 +59,16 @@ def populate_walk_in_users():
 
 	print("populating walk in users completed")
 
+def check_in_scheduled_users():
+	print("checking in scheduled users...")
+	queueManager.check_in_scheduled(4)
+	queueManager.check_in_scheduled(5)
+	print("checking scheduled users completed")
+
 ###############################################
 #     run functions here to populate data     #
 ###############################################
 clear_data()
 populate_scheduled_users()
 populate_walk_in_users()
+check_in_scheduled_users()

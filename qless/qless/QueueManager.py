@@ -65,7 +65,7 @@ class QueueManager:
 	def add_walk_in(self, user_id, name, current_time=-1):
 		if current_time < 0:
 			current_time = self.get_current_millis()
-		predicted_wait_time = self.get_predicted_start_time(current_time, True, 'walk_in', None, user_id)
+		predicted_wait_time_min, predicted_wait_time_max = self.get_new_model_prediction(user_id, arrival_time_millis=current_time)
 		queue = self.firebaseManager.get_walk_in_queue()
 		length = 0
 		if queue:
@@ -73,7 +73,7 @@ class QueueManager:
 			for user in queue:
 				if user.get('id') and user.get('id') == user_id:
 					return False
-		self.firebaseManager.add_walk_in_user(length, user_id, name, current_time, predicted_wait_time, predicted_wait_time+(1000*60*15))
+		self.firebaseManager.add_walk_in_user(length, user_id, name, current_time, predicted_wait_time_min, predicted_wait_time_max)
 		self.firebaseManager.add_user(user_id, name)
 		self.cache_users()
 
@@ -105,8 +105,8 @@ class QueueManager:
 		if user:
 			# get predicted start time
 			current_time = self.get_current_millis()
-			predicted_wait_time = self.get_predicted_start_time(current_time, False, doctor, user.get('scheduled_start_time'), user_id)
-			self.firebaseManager.check_in_scheduled_user(doctor, user_index, current_time, predicted_wait_time, predicted_wait_time+(1000*60*15))
+			#predicted_wait_time = self.get_predicted_start_time(current_time, False, doctor, user.get('scheduled_start_time'), user_id)
+			self.firebaseManager.check_in_scheduled_user(doctor, user_index, current_time, -1, -1)
 
 			# log
 			self.databaseManager.log("check in scheduled: " + str(user_id))
@@ -174,6 +174,84 @@ class QueueManager:
 			# log
 			self.databaseManager.log("seen: " + str(user_id))
 
+	# new prediction model, should only be used for walk in
+	def get_new_model_prediction(self, user_id, arrival_time_millis=-1):
+		# to ensure only for walk in
+		is_walk_in = True
+
+		# this allows for us to manually input arrival times for prototype demo
+		if arrival_time_millis < 0:
+			arrival_time_millis = self.get_current_millis()
+
+		arrival_time_sec = arrival_time_millis/1000
+
+		date = time.strftime("%m/%d/%Y", time.localtime(arrival_time_sec))
+		epoch_start_date = int(time.mktime(time.strptime(date, "%m/%d/%Y"))) # start time of day in seconds
+		epoch_end_date = epoch_start_date + (60*60*24 - 1) # end time of day in seconds
+
+		# 1. arrival_time, # number (minutes since 00:00)
+		arrival_time = (arrival_time_sec - epoch_start_date)/60 # in minutes
+
+		# 2. weekday, # string ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun')
+		weekday = time.strftime("%A", time.localtime(arrival_time_sec))
+		weekday = weekday.lower()[:3]
+
+		# 3. flow_rate, # number (people seen in last hour), calculations done in seconds
+		epoch_one_hour_ago = (arrival_time_sec) - (60*60)
+		seen_queue = self.firebaseManager.get_patients_seen()
+
+		if is_walk_in:
+			doctor_name = 'walk_in'
+
+		flow_rate = 0
+		if seen_queue:
+			for user in seen_queue:
+				if user.get('doctor') == doctor_name:
+					seen_time = user.get('seen_time')/1000
+					if seen_time >= epoch_one_hour_ago and seen_time <= arrival_time_sec:
+						flow_rate = flow_rate + 1
+
+		# 4. queue_length, # number
+		if is_walk_in:
+			queue = self.firebaseManager.get_walk_in_queue()
+		else:
+			queue = self.firebaseManager.get_doctor_queue(doctor_name)
+
+		queue_length = 0
+		if queue:
+			for user in queue:
+				if user.get('id') == user_id:
+					break
+				queue_length = queue_length + 1
+
+		# 5. doctor
+		doctor = 0
+
+		# 6. appointment_time
+		appointment_time = -1
+
+		# 7. num_doctors
+		num_doctors = 1
+
+		# 8. month [1-12] int (1 for jan, 12 for dec)
+		month_as_str = time.strftime("%b", time.localtime(arrival_time_sec))
+		month = time.strptime(month_as_str, '%b').tm_mon
+
+		estimate = estimateWaitTime(arrival_time, weekday, flow_rate, queue_length, doctor, appointment_time, is_walk_in, num_doctors, month)
+
+		if len(estimate) is 2:
+			# convert to millis
+			lower_bound = estimate[0]*60*1000 + arrival_time_millis
+			upper_bound = estimate[1]*60*1000 + arrival_time_millis
+			return lower_bound, upper_bound
+
+		# defaults
+		default_lower_bound = arrival_time_millis + 1000*60*30
+		default_upper_bound = arrival_time_millis + 1000*60*45
+
+		return default_lower_bound, default_upper_bound
+
+	# DEPRECATED
 	# helper function to get predicted start time from prediction model
 	def get_predicted_start_time(self, current_time, is_walk_in, doctor_name, appointment_time, user_id):
 		# 2. weekday, # string ('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun')
@@ -224,7 +302,7 @@ class QueueManager:
 			for user in seen_queue:
 				if user.get('doctor') == doctor_name:
 					seen_time = user.get('seen_time')
-					if seen_time >= epoch_one_hour_ago and seen_time <= current_time:
+					if seen_time >= epoch_one_hour_ago*1000 and seen_time <= current_time:
 						flow_rate = flow_rate + 1
 
 		# 1. arrival_time, # number (minutes since 00:00)
