@@ -186,12 +186,12 @@ renderList = (listPos, header, patients, isWalkIn = false) ->
 			else 
 				detail = 'less than ' + round5(maxWaitTime) + " min wait"
 
-		if patient.is_checked_in is true 
+		else if patient.is_checked_in is true
 			bgColor = "#DAE7FF"
 			nameColor = "#4786FF"
 			waitColor = "#7A7C87"
 			borderColor = "#DAE7FF"
-			apptTime = new Date(patient.predicted_start_time);
+			apptTime = new Date(patient.scheduled_start_time);
 			hours = apptTime.getHours()
 			if hours >= 12
 				ampm = 'PM'
