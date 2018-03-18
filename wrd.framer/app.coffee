@@ -199,7 +199,8 @@ renderList = (listPos, header, patients, isWalkIn = false) ->
 				ampm = 'AM'
 			hours = hours % 12;
 			hours = hours ? hours : 12;
-			detail = "Appt at " + hours + ":" + apptTime.getMinutes() + ' ' + ampm
+			min = ('0' + apptTime.getMinutes()).slice(-2)
+			detail = "Appt at " + hours + ":" + min + ' ' + ampm
 
 		if isWalkIn is true or patient.is_checked_in is true 
 			patientCard = new Layer
