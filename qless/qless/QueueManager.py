@@ -3,6 +3,7 @@ import time
 from pprint import pprint
 from FirebaseManager import FirebaseManager
 from DatabaseManager import DatabaseManager
+from Residual import Residual
 from rmodel import estimateWaitTime
 
 class QueueManager:
@@ -10,8 +11,29 @@ class QueueManager:
 		self.firebaseManager = FirebaseManager()
 		self.databaseManager = DatabaseManager()
 		self.users = {}
+		self.residuals = {}
 
 		self.cache_users()
+
+	# store residual
+	def store_residual(self, user_id, seen_time_millis):
+		seen_time_sec = seen_time_millis/1000
+
+		user_id_key = str(user_id)
+		residual = self.residuals.get(user_id_key, None)
+
+		# timestamp
+		residual.timestamp = seen_time_millis
+
+		# calculate seen time = minutes, 0 being 12:00AM
+		date = time.strftime("%m/%d/%Y", time.localtime(seen_time_sec))
+		epoch_start_date = int(time.mktime(time.strptime(date, "%m/%d/%Y"))) # start time of day in seconds
+		seen_time = int((seen_time_sec - epoch_start_date)/60)
+		residual.seen_time = seen_time
+
+		if residual:
+			self.databaseManager.store_residual(residual)
+			del self.residuals[user_id_key]
 
 	# get all users from db and store locally
 	def cache_users(self):
@@ -164,12 +186,16 @@ class QueueManager:
 			# add user to seen
 			patients_seen_queue = self.firebaseManager.get_patients_seen()
 			queue_size = 0 if patients_seen_queue is None else len(patients_seen_queue)
-			user['seen_time'] = self.get_current_millis()
+			current_time_millis = self.get_current_millis()
+			user['seen_time'] = current_time_millis
 			self.firebaseManager.add_seen_user(queue_size, user)
 
 			# remove user from now_paging
 			del users[index]
 			self.firebaseManager.update_now_paging(users)
+
+			# store residual
+			self.store_residual(user_id, current_time_millis)
 
 			# log
 			self.databaseManager.log("seen: " + str(user_id))
@@ -237,22 +263,38 @@ class QueueManager:
 		month_as_str = time.strftime("%b", time.localtime(arrival_time_sec))
 		month = time.strptime(month_as_str, '%b').tm_mon
 
+		# hardcoded because 'sun' does not work
+		weekday = 'mon'
+
 		estimate = estimateWaitTime(arrival_time, weekday, flow_rate, queue_length, doctor, appointment_time, is_walk_in, num_doctors, month)
 		print(estimate)
 		print(arrival_time, weekday, flow_rate, queue_length, doctor, appointment_time, is_walk_in, num_doctors, month)
 
+		# defaults
+		lower_bound = arrival_time_millis + 1000*60*30
+		upper_bound = arrival_time_millis + 1000*60*45
+		estimated_wait_time = 38
 
 		if len(estimate) >= 2:
 			# convert to millis
 			lower_bound = estimate[0]*60*1000 + arrival_time_millis
 			upper_bound = estimate[1]*60*1000 + arrival_time_millis
-			return lower_bound, upper_bound
+			estimated_wait_time = int(estimate[2])
 
-		# defaults
-		default_lower_bound = arrival_time_millis + 1000*60*30
-		default_upper_bound = arrival_time_millis + 1000*60*45
+		# store residual
+		residual = Residual(
+			arrival_time,
+			weekday,
+			flow_rate,
+			queue_length,
+			doctor,
+			is_walk_in,
+			num_doctors,
+			month,
+			estimated_wait_time)
+		self.residuals[str(user_id)] = residual
 
-		return default_lower_bound, default_upper_bound
+		return lower_bound, upper_bound
 
 	# DEPRECATED
 	# helper function to get predicted start time from prediction model

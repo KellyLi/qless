@@ -72,10 +72,31 @@ def check_in_scheduled_users():
 	queueManager.check_in_scheduled(7)
 	print("checking scheduled users completed")
 
+def page_walk_in_users():
+	print("paging walk in users...")
+	queueManager.page_user(8, "Room A")
+	queueManager.page_user(9, "Room B")
+	print("paging walk in users completed")
+
+def seen_walk_in_users():
+	print("set seen walk in users...")
+	queueManager.seen_user(8)
+	queueManager.seen_user(9)
+	print("set seen walk in users completed")
+
+
 ###############################################
 #     run functions here to populate data     #
 ###############################################
+print("running populate_demo_data...")
+
 clear_data()
+
 populate_scheduled_users()
-populate_walk_in_users()
 check_in_scheduled_users()
+
+populate_walk_in_users()
+page_walk_in_users()
+seen_walk_in_users()
+
+print("populate_demo_data completed!")
