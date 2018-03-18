@@ -4,15 +4,25 @@ from pprint import pprint
 from FirebaseManager import FirebaseManager
 from DatabaseManager import DatabaseManager
 from Residual import Residual
+from IDGenerator import IDGenerator
 from rmodel import estimateWaitTime
 
+# key being queue name, value being display name prefix
+ID_GENERATOR_PAIRS = {
+	"walk_in": "W",
+	"doctor_hudson": "H",
+	"doctor_martin": "M"
+}
+
 class QueueManager:
-	def __init__(self):
+	def __init__(self, sync_id_generators=True):
 		self.firebaseManager = FirebaseManager()
 		self.databaseManager = DatabaseManager()
 		self.users = {}
 		self.residuals = {}
+		self.id_generators = {}
 
+		self.init_id_generators(sync_id_generators)
 		self.cache_users()
 
 	# store residual
@@ -21,6 +31,9 @@ class QueueManager:
 
 		user_id_key = str(user_id)
 		residual = self.residuals.get(user_id_key, None)
+
+		if residual is None:
+			return
 
 		# timestamp
 		residual.timestamp = seen_time_millis
@@ -31,9 +44,19 @@ class QueueManager:
 		seen_time = int((seen_time_sec - epoch_start_date)/60)
 		residual.seen_time = seen_time
 
-		if residual:
-			self.databaseManager.store_residual(residual)
-			del self.residuals[user_id_key]
+		self.databaseManager.store_residual(residual)
+		del self.residuals[user_id_key]
+
+	# init id generators
+	def init_id_generators(self, sync_id_generators):
+		for key, value in ID_GENERATOR_PAIRS.iteritems():
+			new_generator = IDGenerator(value, key)
+			if sync_id_generators:
+				new_generator.sync_counter()
+			self.id_generators[key] = new_generator
+
+	def get_next_id(self, doctor_name):
+		return self.id_generators[doctor_name].get_next_id()
 
 	# get all users from db and store locally
 	def cache_users(self):
@@ -47,13 +70,16 @@ class QueueManager:
 		#pprint(self.users)
 
 	# logic to add scheduled user
-	def add_scheduled_user(self, user_id, name, doctor_name, scheduled_start_time):
+	def add_scheduled_user(self, user_id, real_name, doctor_name, scheduled_start_time):
 		queue = self.firebaseManager.get_doctor_queue(doctor_name)
+
+		name = self.get_next_id(doctor_name)
 
 		data = {
 			u'id': user_id,
 			u'check_in_time': -1,
 			u'is_checked_in': False,
+			u'real_name': real_name,
 			u'name': name,
 			u'predicted_start_time': -1,
 			u'scheduled_start_time': scheduled_start_time
@@ -75,7 +101,7 @@ class QueueManager:
 				index = index + 1
 
 		self.firebaseManager.update_queue(doctor_name, queue)
-		self.firebaseManager.add_user(user_id, name)
+		self.firebaseManager.add_user(user_id, real_name)
 		self.cache_users()
 
 		# log
@@ -84,7 +110,7 @@ class QueueManager:
 			+ " at " + str(scheduled_start_time))
 
 	# logic for walk in check in
-	def add_walk_in(self, user_id, name, current_time=-1):
+	def add_walk_in(self, user_id, real_name, current_time=-1):
 		if current_time < 0:
 			current_time = self.get_current_millis()
 		predicted_wait_time_min, predicted_wait_time_max = self.get_new_model_prediction(user_id, arrival_time_millis=current_time)
@@ -95,8 +121,9 @@ class QueueManager:
 			for user in queue:
 				if user.get('id') and user.get('id') == user_id:
 					return False
-		self.firebaseManager.add_walk_in_user(length, user_id, name, current_time, predicted_wait_time_min, predicted_wait_time_max)
-		self.firebaseManager.add_user(user_id, name)
+		name = self.get_next_id("walk_in")
+		self.firebaseManager.add_walk_in_user(length, user_id, real_name, name, current_time, predicted_wait_time_min, predicted_wait_time_max)
+		self.firebaseManager.add_user(user_id, real_name)
 		self.cache_users()
 
 		# log

@@ -39,11 +39,12 @@ class FirebaseManager:
 	def update_users(self, data):
 		self.firebase.put('', "users", data)
 
-	def add_walk_in_user(self, index, user_id, name, current_time, predicted_start_time_min, predicted_start_time_max):
+	def add_walk_in_user(self, index, user_id, real_name, name, current_time, predicted_start_time_min, predicted_start_time_max):
 		data = {
 			index: {
 				'id': user_id,
 				'check_in_time': current_time,
+				'real_name': real_name,
 				'name': name,
 				'predicted_start_time_min': predicted_start_time_min,
 				'predicted_start_time_max': predicted_start_time_max
